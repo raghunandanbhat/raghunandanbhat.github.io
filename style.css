@@ -11,6 +11,10 @@ ul.tabs>li {
     background-color: #12161a;
 }
 
+ul li{
+    margin-bottom: 8px;
+}
+
 body {
     color: #fff;
     background: #12161a;
