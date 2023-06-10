@@ -11,7 +11,7 @@ ul.tabs>li {
     background-color: #12161a;
 }
 
-ul li{
+ul li {
     margin-bottom: 8px;
 }
 
@@ -29,11 +29,12 @@ a {
     text-decoration: underline;
 }
 
-a:hover,.active-page {
+a:hover,
+.active-page {
     color: #c6c;
 }
 
-.center { 
+.center {
     display: block;
     margin-left: auto;
     margin-right: auto;
