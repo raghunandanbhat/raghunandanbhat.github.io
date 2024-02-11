@@ -19,7 +19,7 @@ body {
   font-size: 16px;
   line-height: 1.5;
   // font-family: Monaco, "Bitstream Vera Sans Mono", "Lucida Console", Terminal, monospace;
-  font-family: Fira Code;
+  font-family: Helvetica;
 }
 
 /* General & 'Reset' Stuff */
@@ -73,6 +73,7 @@ header h1 {
   font-weight: bold;
   // font-family: Monaco, "Bitstream Vera Sans Mono", "Lucida Console", Terminal, monospace;
   font-family: Fira Code;
+  // font-family: Helvetica;
   color: $conifer;//$header;
   text-shadow: 0 1px 1px rgba(0, 0, 0, 0.1),
                0 0 5px rgba(181, 232, 83, 0.1),
@@ -101,7 +102,8 @@ section img {
 h1, h2, h3, h4, h5, h6 {
   font-weight: normal;
   // font-family: Monaco, "Bitstream Vera Sans Mono", "Lucida Console", Terminal, monospace;
-  font-family: Fira Code;
+  // font-family: Fira Code;
+  font-family: Helvetica;
   color: $header;
   letter-spacing: -0.03em;
   text-shadow: 0 1px 1px rgba(0, 0, 0, 0.1),
@@ -170,8 +172,13 @@ code.highlighter-rouge {
   border: 1px solid rgba(255, 255, 255, 0.15);
   padding: 0px 3px;
   margin: 0px -3px;
-  color: #aa759f;
+  color: #ff9999;
   border-radius: 2px;
+  font-family: Fira Code;
+}
+
+code {
+  font-family: Fira Code;
 }
 
 table {
@@ -209,7 +216,8 @@ hr {
   border-top: 2px solid rgba(0, 0, 0, 1);
   color: rgba(255, 255, 255, 0.8);
   // font-family: Helvetica, Arial, sans-serif;
-  font-family: Fira Code;
+  // font-family: Fira Code;
+  font-family: Helvetica;
   font-weight: bold;
   font-size: 13px;
   text-decoration: none;
