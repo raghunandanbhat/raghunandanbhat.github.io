@@ -2,9 +2,6 @@
 title: 1 Billion Row Challenge in Python
 published: true
 ---
-
-On January 1st of this year  released a new challenge called . The challenge is to read and aggregate 1 billion rows from a text file as fast as possible. If you want to submit your entry and win the challenge, you should submit the solution in Java. However, he allowed submissions in other languages in  section. This post is all about how I tried this challenge in my language of choice- Python without any Python packages.
-
 On January 1st of this year, [Gunnar Morling](https://twitter.com/gunnarmorling) launched a new challenge known as the [1 Billion Row Challenge](https://github.com/gunnarmorling/1brc). The objective? To read and aggregate 1 billion rows from a text file as quickly as possible. While the challenge officially requires submissions in Java to be eligible for winning, Gunnar allowed participants to showcase solutions in other languages in the [Show & Tell](https://github.com/gunnarmorling/1brc/discussions/62) section. In this post, I'll detail my attempt at tackling this challenge using my language of choice: Python, and without relying on any external Python packages.
 
 ### **The Problem**
