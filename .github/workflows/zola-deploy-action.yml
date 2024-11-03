@@ -13,4 +13,4 @@ jobs:
           # Target branch
           PAGES_BRANCH: gh-pages
           # Or if publishing to the same repo, use the automatic token
-          TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
