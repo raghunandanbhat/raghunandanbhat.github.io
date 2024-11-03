@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
+    <title> - javascript</title>
+    <link href="/tags/javascript/atom.xml" rel="self" type="application/atom+xml"/>
+    <link href="/"/>
+    <generator uri="https://www.getzola.org/">Zola</generator>
+    <updated>2024-03-21T00:00:00+00:00</updated>
+    <id>/tags/javascript/atom.xml</id>
+    <entry xml:lang="en">
+        <title>Why do JavaScript devs get to have all the fun?</title>
+        <published>2024-03-21T00:00:00+00:00</published>
+        <updated>2024-03-21T00:00:00+00:00</updated>
+        <author>
+          <name>Unknown</name>
+        </author>
+        <link rel="alternate" href="/blog/python-memes/" type="text/html"/>
+        <id>/blog/python-memes/</id>
+        
+        <content type="html">&lt;p&gt;I have seen a lot of memes on JavaScript on the Internet. At this point, JS memes are overtaking the NodeJS memes and time has come to change that. Introducing a new entry into this list - Python. Recently, I have been seeing some quirks of Python on X (twitter) and some of them are my own experiences. This post is all about weird behaviors of Python. Let&#x27;s go!&lt;&#x2F;p&gt;
+&lt;p align=&quot;center&quot;&gt;
+    &lt;img src=&quot;..&#x2F;..&#x2F;imgs&#x2F;python-meme.png&quot;&#x2F;&gt;
+&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;numbers-in-python&quot;&gt;&lt;strong&gt;Numbers in Python&lt;&#x2F;strong&gt;&lt;&#x2F;h3&gt;
+&lt;p&gt;You can use an underscore ( &lt;code&gt;_&lt;&#x2F;code&gt; ) instead of a comma ( &lt;code&gt;,&lt;&#x2F;code&gt; ) in python numbers for better readbility. For example, &lt;code&gt;1_000_000&lt;&#x2F;code&gt; is a valid number and it is easy to read. Why is it an issue? Imagine you write a regular expression to match number and you forget to include &lt;code&gt;_&lt;&#x2F;code&gt; in it. Good luck debugging it if you&#x27;re not aware of this fact.&lt;&#x2F;p&gt;
+&lt;p&gt;Trust me all of these numbers are valid and this is the correct regular expression to match numbers in python. LGTM if I see this in code review!&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;py&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-py &quot;&gt;&lt;code class=&quot;language-py&quot; data-lang=&quot;py&quot;&gt;&lt;span&gt;numbers = &amp;quot;&amp;quot;&amp;quot;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;Integers: 1_0_0_0, -2_00, +3_0_000
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;Floats: 1_2.3_4, -0.5_5, +10_0.0_0_1
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;Scientific: 1e10, 2.5E-3, 1_2.3_4e+5_0_0, -1.2E-1_0
+&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&amp;quot;&amp;quot;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;pattern = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;r&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;[+-]&lt;&#x2F;span&gt;&lt;span&gt;?&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;\b&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;\d&lt;&#x2F;span&gt;&lt;span&gt;+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;(_&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;\d&lt;&#x2F;span&gt;&lt;span&gt;+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;)&lt;&#x2F;span&gt;&lt;span&gt;*&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;\.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;\d&lt;&#x2F;span&gt;&lt;span&gt;+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;(_&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;\d&lt;&#x2F;span&gt;&lt;span&gt;+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;)&lt;&#x2F;span&gt;&lt;span&gt;*&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;)&lt;&#x2F;span&gt;&lt;span&gt;?&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;[eE][+-]&lt;&#x2F;span&gt;&lt;span&gt;?&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;\d&lt;&#x2F;span&gt;&lt;span&gt;+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;(_&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;\d&lt;&#x2F;span&gt;&lt;span&gt;+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;)&lt;&#x2F;span&gt;&lt;span&gt;*&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;)&lt;&#x2F;span&gt;&lt;span&gt;?&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;\b&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;matches = re.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;findall&lt;&#x2F;span&gt;&lt;span&gt;(pattern, numbers)
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;h3 id=&quot;lists-in-python&quot;&gt;&lt;strong&gt;Lists in Python&lt;&#x2F;strong&gt;&lt;&#x2F;h3&gt;
+&lt;p&gt;You can multiply a Python &lt;code&gt;list&lt;&#x2F;code&gt; by an integer, and it&#x27;s totally valid and intuitive. At least, I thought so until I saw this &lt;a href=&quot;https:&#x2F;&#x2F;x.com&#x2F;francoisfleuret&#x2F;status&#x2F;1770528106513600636&quot;&gt;post&lt;&#x2F;a&gt; from &lt;a href=&quot;https:&#x2F;&#x2F;twitter.com&#x2F;francoisfleuret&quot;&gt;François Fleuret&lt;&#x2F;a&gt;&lt;&#x2F;p&gt;
+&lt;img src=&quot;..&#x2F;..&#x2F;imgs&#x2F;list-multiply.png&quot;&#x2F;&gt;
+&lt;p&gt;The answer to this is simple. Everything in Python is an object, and when the &lt;code&gt;*&lt;&#x2F;code&gt; operator is used with a sequence type object, it repeats that object x number of times. &lt;code&gt;[[]] * 4&lt;&#x2F;code&gt; produces &lt;code&gt;[[], [], [], []]&lt;&#x2F;code&gt;. When &lt;code&gt;*&lt;&#x2F;code&gt; is used on an empty &lt;code&gt;list&lt;&#x2F;code&gt; object, it simply repeats the same object 4 times. Remember, all 4 empty lists are references to the same empty &lt;code&gt;list&lt;&#x2F;code&gt; object. When you append to any one of these empty lists, your modification is reflected in all of its copies.&lt;&#x2F;p&gt;
+&lt;p&gt;There&#x27;s great in-depth explanation for this &lt;a href=&quot;https:&#x2F;&#x2F;blog.codingconfessions.com&#x2F;p&#x2F;why-do-python-lists-multiply-oddly&quot;&gt;here&lt;&#x2F;a&gt; by &lt;a href=&quot;https:&#x2F;&#x2F;twitter.com&#x2F;abhi9u&quot;&gt;Abhinav&lt;&#x2F;a&gt;.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;dictionary-in-python&quot;&gt;&lt;strong&gt;Dictionary in Python&lt;&#x2F;strong&gt;&lt;&#x2F;h3&gt;
+&lt;p&gt;Yet another Python quirk from twitter, posted &lt;a href=&quot;https:&#x2F;&#x2F;x.com&#x2F;ryxcommar&#x2F;status&#x2F;1772105348872011972&quot;&gt;here&lt;&#x2F;a&gt;.&lt;&#x2F;p&gt;
+&lt;img src=&quot;..&#x2F;..&#x2F;imgs&#x2F;python-dict-hash.png&quot;&#x2F;&gt;
+&lt;p&gt;When python is constrcuting the dictionary, it uses &lt;code&gt;hash()&lt;&#x2F;code&gt;, and in case of hash collision, it checks for equivalence. Here, &lt;code&gt;hash(1) == hash(True) == 1&lt;&#x2F;code&gt; and &lt;code&gt;1 == True&lt;&#x2F;code&gt; in Python. So, the key is overwritten.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;few-more&quot;&gt;&lt;strong&gt;Few more&lt;&#x2F;strong&gt;&lt;&#x2F;h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;x.com&#x2F;voooooogel&#x2F;status&#x2F;1770888806641827903&quot;&gt;Mutable default arguments&lt;&#x2F;a&gt;&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;x.com&#x2F;demestive&#x2F;status&#x2F;1770930025811910772&quot;&gt;Defining a lambda in a loop that refers to loop varibale&lt;&#x2F;a&gt;&lt;&#x2F;li&gt;
+&lt;li&gt;to be continued...&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+</content>
+        
+    </entry>
+</feed>

@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TLDR - Spark and RDD (2010) | </title>
+    <meta name="title" content="TLDR - Spark and RDD (2010)">
+<meta name="description" content="">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono&family=Merriweather+Sans:wght@300&family=Merriweather:wght@300&display=swap" rel="stylesheet">
+    <style>
+        :root {
+    --width: 800px;
+    --font-main: Verdana, Merriweather, Merriweather Sans, sans-serif;
+    --font-secondary: Verdana, Merriweather, Merriweather Sans, sans-serif;
+    --font-scale: 1em;
+    --background-color: #fff;
+    --heading-color: #222;
+    --text-color: #444;
+    --link-color: #3273dc;
+    --visited-color: #8b6fcb;
+    --code-background-color: #f2f2f2;
+    --code-color: #222;
+    --blockquote-color: #222;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --background-color: #01242e;
+        --heading-color: #eee;
+        --text-color: #ddd;
+        --link-color: #8cc2dd;
+        --visited-color: #8b6fcb;
+        --code-background-color: #000;
+        --code-color: #ddd;
+        --blockquote-color: #ccc;
+    }
+}
+
+body {
+    font-family: var(--font-secondary);
+    font-size: var(--font-scale);
+    margin: auto;
+    padding:20px;
+    max-width: var(--width);
+    text-align: left;
+    background-color: var(--background-color);
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    line-height: 1.5;
+    color: var(--text-color);
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-main);
+    color: var(--heading-color);
+}
+
+a {
+    color: var(--link-color); cursor: pointer; text-decoration: none;
+}
+a:hover {
+    text-decoration: underline;
+}
+
+nav a {
+    margin-right: 8px;
+}
+nav span.active {
+    font-weight: bold;
+    margin-right: 10px;
+}
+
+strong, b {
+    color: var(--heading-color);
+}
+
+button {
+    margin: 0;
+    cursor: pointer;
+}
+
+main {
+    line-height: 1.6;
+}
+
+table {
+    width: 100%;
+}
+
+hr {
+    border: 0;
+    border-top: 1px
+    dashed;
+}
+
+img {
+    max-width: 100%;
+}
+
+pre code {
+    background-color: var(--code-background-color);
+    color: var(--code-color);
+    display: block;
+    padding: 20px;
+    white-space: pre-wrap;
+    font-size: 0.875rem;
+    overflow-x: auto;
+}
+
+code {
+    font-family: JetBrains Mono, monospace;
+    padding: 2px;
+    background-color: var(--code-background-color);
+    color: var(--code-color);
+    border-radius: 3px;
+}
+
+blockquote {
+    border-left: 1px solid #999;
+    color: var(--code-color);
+    padding-left: 20px;
+    font-style: italic;
+}
+
+footer {
+    padding: 25px 0;
+    text-align: center;
+}
+
+.title:hover { text-decoration: none; }
+.title h1 { font-size: 1.5em;}
+.inline { width: auto !important; }
+.highlight,
+.code { padding: 1px 15px;
+    background-color: var(--code-background-color);
+    color: var(--code-color);
+    border-radius: 3px;
+    margin-block-start: 1em;
+    margin-block-end: 1em;
+    overflow-x: auto;
+}
+
+/* blog post list */
+ul.blog-posts { list-style-type: none; padding:unset; }
+ul.blog-posts li { display: flex; }
+ul.blog-posts li span { flex: 0 0 130px; }
+ul.blog-posts li a:visited { color: var(--visited-color); }
+.tags {font-size: smaller; }
+
+    </style>
+</head>
+<body>
+  <header>
+  <a href="/" class="title">
+    <h1></h1>
+  </a>
+  <nav aria-label="site">
+      <a href="/">Home</a>
+      <a href="/blog/">Blog</a>
+      <a href="/projects/">Projects</a>
+      <a href="/misc/">misc.</a>
+  </nav>
+</header>
+<h1>TLDR - Spark and RDD (2010)</h1>
+      <p>
+        <i>
+          <time datetime="2024-07-26T00:00:00+00:00" pubdate>2024-07-26</time>
+        </i>
+      </p>
+    <details open>
+      <summary>Table of contents</summary>
+    <ul>
+        <li>
+          <a href="/blog/tldr-spark-rdd/#architecture">Architecture</a>
+        </li>
+        <li>
+          <a href="/blog/tldr-spark-rdd/#resilient-distributed-dataset-rdd-from-the-original-paper">Resilient Distributed Dataset(RDD) - from the original paper</a>
+        </li>
+        <li>
+          <a href="/blog/tldr-spark-rdd/#rdd-resilient-distributed-dataset">RDD - Resilient Distributed Dataset</a>
+        </li>
+        <li>
+          <a href="/blog/tldr-spark-rdd/#spark-runtime">Spark Runtime</a>
+        </li>
+    </ul>
+    </details>
+  <main>
+    <p><a href="http://nil.csail.mit.edu/6.5840/2023/papers/zaharia-spark.pdf">original RDD paper by matei zaharia</a></p>
+<p>unified (distributed) engine  for large-scale data processing and analytics.
+spark generalizes the map and reduce steps into a complete notion of multistep data flow graph.
+it supports iterative applications on data. multiple map reduce operations loop over same data</p>
+<p>Its a unified engine that makes large workload easy and fast</p>
+<p><img src="https://prod-files-secure.s3.us-west-2.amazonaws.com/2f23d75d-8cd2-4d5a-9e68-9e5a290e391d/e5c84b3c-5d75-4288-a4a5-49d8681eae7e/Untitled.png" alt="Untitled" /></p>
+<p>Spark uses RDD</p>
+<p>It does not execute every input provided by the user. It queues them into some list of tasks to be done in a manner of DAG - directed acyclic graph.</p>
+<h3 id="architecture">Architecture</h3>
+<ul>
+<li>master-worker architecture. master is called driver program and the other nodes are called worker nodes</li>
+<li>you create a <code>SparkContext</code>  object in your program, this is called driver program</li>
+<li>to run on a cluster, <code>SparkContext</code>  can connect to several types of cluster managers to allocate resources across application. this can be spark’s own standalone manager, Mesos, YARN, or Kubernetes.</li>
+<li>Once connected to cluster manager, spark acquires <code>executor</code> nodes in the cluster. this is where computations are done for your data</li>
+<li>next you can send your application code (JAR or python files passed to SparkContext) to the executors</li>
+<li>finally sparkcontext sends tasks to executors to run</li>
+</ul>
+<p><img src="https://prod-files-secure.s3.us-west-2.amazonaws.com/2f23d75d-8cd2-4d5a-9e68-9e5a290e391d/dd116da8-2082-40f3-a4d6-d098ce928a02/Untitled.png" alt="Untitled" /></p>
+<p><img src="https://prod-files-secure.s3.us-west-2.amazonaws.com/2f23d75d-8cd2-4d5a-9e68-9e5a290e391d/8bcb38ba-2f2b-4b5f-a630-cc1f2c0b0eaa/Untitled.png" alt="Untitled" /></p>
+<ul>
+<li>when you write a spark job, it’s called a spark application</li>
+<li>driver process takes the command from the user, analyze it and send it to executors to do the work.</li>
+<li>when actions are called, RDD’s lineage is used to construct a DAG and they are executed</li>
+<li>Spark scheduler does all this</li>
+</ul>
+<h3 id="resilient-distributed-dataset-rdd-from-the-original-paper">Resilient Distributed Dataset(RDD) - from the original paper</h3>
+<p><strong>Why Spark?</strong></p>
+<ul>
+<li>MapReduce was great for batch processing but users needed more
+<ul>
+<li>more complex, multi-pass algorithms</li>
+<li>more interactive ad-hoc queries</li>
+<li>more real-time stream processing</li>
+</ul>
+</li>
+<li>the older frameworks provided abstraction over distributing workloads, some level of fault tolerance. Spark does more by providing abstraction for distributed in-memory computation</li>
+</ul>
+<p>2 main inefficiencies:</p>
+<ul>
+<li>Data re-use is common in many iterative workloads like machine learning &amp; graph algorithms. these applications re-use intermediate results across multiple computations [result between 2 map reduce jobs]</li>
+<li>no support for interactive querying of data. can’t run multiple adhoc queries on the same subset of data</li>
+<li>saving these intermediate states between 2 map-reduce step is an IO overhead and needs to be stored in stable storage.</li>
+</ul>
+<p>figure below shows how the intermediate result is written to a DFS and again read from there</p>
+<p><img src="https://prod-files-secure.s3.us-west-2.amazonaws.com/2f23d75d-8cd2-4d5a-9e68-9e5a290e391d/b3961cc3-4ff3-445a-b850-f1fbca50825a/Untitled.png" alt="Untitled" /></p>
+<p>How Spark Solves this?</p>
+<p><img src="https://prod-files-secure.s3.us-west-2.amazonaws.com/2f23d75d-8cd2-4d5a-9e68-9e5a290e391d/ac935e42-fa8b-416c-8451-057d15edef64/Untitled.png" alt="Untitled" /></p>
+<p>Example operation:</p>
+<pre data-lang="python" style="background-color:#2b303b;color:#c0c5ce;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#65737e;">&quot;&quot;&quot;
+</span><span style="color:#65737e;">load error messages from the a logfile stored in HDFS or any other file sytem
+</span><span style="color:#65737e;">then interactively search for various patterns
+</span><span style="color:#65737e;">&quot;&quot;&quot;
+</span><span>
+</span><span style="color:#65737e;"># base RDD of strings. a collection of lines from error logfile, now converted
+</span><span style="color:#65737e;"># as an RDD
+</span><span>lines = spark.</span><span style="color:#bf616a;">textFile</span><span>(&quot;</span><span style="color:#a3be8c;">hdfs://....</span><span>&quot;)
+</span><span>
+</span><span style="color:#65737e;"># filter out errors from the base RDD of just lines
+</span><span style="color:#65737e;"># now we get a transformed RDD: errors
+</span><span>errors = lines.</span><span style="color:#bf616a;">filter</span><span>(</span><span style="color:#b48ead;">lambda </span><span style="color:#bf616a;">s</span><span>: s.</span><span style="color:#bf616a;">startswith</span><span>(&quot;</span><span style="color:#a3be8c;">ERROR</span><span>&quot;))
+</span><span>
+</span><span style="color:#65737e;"># just the messages from error, assuming tab seperation
+</span><span>error_messages = errors.</span><span style="color:#bf616a;">filter</span><span>(</span><span style="color:#b48ead;">lambda </span><span style="color:#bf616a;">s</span><span>: s.</span><span style="color:#bf616a;">split</span><span>(&#39;</span><span style="color:#96b5b4;">\t</span><span>&#39;)[</span><span style="color:#d08770;">2</span><span>])
+</span><span>
+</span><span style="color:#65737e;"># until this step, all are just transformations. none of these are executed
+</span><span style="color:#65737e;"># and they are evaluated lzaily
+</span><span>messages.</span><span style="color:#bf616a;">cache</span><span>() </span><span style="color:#65737e;"># store the errors efficiently
+</span><span>
+</span><span style="color:#65737e;"># count how many errors are related to MySQL
+</span><span style="color:#65737e;"># count() is an action - this kick starts the parallel execution
+</span><span style="color:#65737e;"># tasks are sent out from  Driver to Workers, they do the task, store the result
+</span><span style="color:#65737e;"># in cache (because we said so) and return result
+</span><span>messages.</span><span style="color:#bf616a;">filter</span><span>(</span><span style="color:#b48ead;">lambda </span><span style="color:#bf616a;">s</span><span>: &quot;</span><span style="color:#a3be8c;">MySQL</span><span>&quot; in s).</span><span style="color:#bf616a;">count</span><span>()
+</span><span>
+</span><span style="color:#65737e;"># now if we want to filter error messages of Redis, we can just use the
+</span><span style="color:#65737e;"># cached messages, instead of running all the processes again
+</span><span>messages.</span><span style="color:#bf616a;">filter</span><span>(</span><span style="color:#b48ead;">lambda </span><span style="color:#bf616a;">s</span><span>: &quot;</span><span style="color:#a3be8c;">Redis</span><span>&quot; in s).</span><span style="color:#bf616a;">count</span><span>()
+</span></code></pre>
+<p><img src="https://prod-files-secure.s3.us-west-2.amazonaws.com/2f23d75d-8cd2-4d5a-9e68-9e5a290e391d/63c585d7-7c66-4bca-aa5d-b23ba9469f86/Untitled.png" alt="Untitled" /></p>
+<h2 id="rdd-resilient-distributed-dataset">RDD - Resilient Distributed Dataset</h2>
+<ul>
+<li>RDD - its a distributed memory model that lets programmers perform in-memory computations on large cluster. this is the secret sauce behind efficient reuse of intermediate results</li>
+<li>RDDs are collection of objects that are distributed across different nodes, but you can interact with the data as if its on a single machine.</li>
+<li>they are built using parallel transformation such as map, filter etc. they can be reconstructed automatically when there;s failure</li>
+</ul>
+<h3 id="fault-tolerance-in-rdds-rdds-track-lineage-info-to-rebuild-lost-data">Fault Tolerance in RDDs: RDDs track lineage info to rebuild lost data</h3>
+<p>RDD - fault-tolerant parallel data structures that let users explicitly persist intermediate results in memory, controlling their partitioning to optimize data placement and manipulate them with rich set of operators.</p>
+<ul>
+<li>Has coarse-grained transformations (map, filter etc) that apply the same operation to many data items.</li>
+<li>the transformations are logged and used to build a dataset (its lineage) rather than the actual data.</li>
+<li>so if any of RDD in the middle is lost, we have enough info recreate the same using the logged transformations &amp; applying them to other RDDs</li>
+</ul>
+<p><img src="https://prod-files-secure.s3.us-west-2.amazonaws.com/2f23d75d-8cd2-4d5a-9e68-9e5a290e391d/4b722e47-7533-4bed-81d7-a00a05fcc5e6/Untitled.png" alt="Untitled" /></p>
+<ul>
+<li>RDDs are read-only, partitioned collection of records.</li>
+<li>they can be created either on
+<ul>
+<li>data in stable storage, or</li>
+<li>from other RDDs</li>
+<li>though operations called - transformations like map, filter and join</li>
+</ul>
+</li>
+<li>users can control RDDs in 2 ways
+<ul>
+<li>persistence - if you want to reuse an RDD in future</li>
+<li>partitioning</li>
+</ul>
+</li>
+<li>Action operations include - count, collect, save, etc - they output the dataset to a storage system</li>
+<li>Computations are lazy, only actions trigger the execution</li>
+</ul>
+<h2 id="spark-runtime">Spark Runtime</h2>
+<ul>
+<li>Includes a single Driver and multiple Workers</li>
+</ul>
+<p><img src="https://prod-files-secure.s3.us-west-2.amazonaws.com/2f23d75d-8cd2-4d5a-9e68-9e5a290e391d/552bb9db-68a6-450e-9b16-c7b9ed228ec1/Untitled.png" alt="Untitled" /></p>
+<ul>
+<li>developers write a driver program, that connects to to a cluster of workers</li>
+<li>driver defines one or more RDDs and invokes actions on them</li>
+<li>lineage is tracked on the driver program side as well.</li>
+<li>workers are the long lived processes that can store RDD partitions in RAM across operations</li>
+</ul>
+<h3 id="narrow-wide-dependency">Narrow &amp; Wide Dependency</h3>
+<ul>
+<li>dependency defines whether computation done one one worker node is shared with other nodes in the cluster</li>
+<li>Narrow Dependency: if a type of task submitted completes without interacting with other nodes or does not depend on the results of other nodes, they are called narrow dependencies</li>
+<li>Wide Dependency: after few narrow dependency steps, results are shared with other nodes, in order to further the computation. this is called wide dependency</li>
+<li>In wide dependency, intermediate RDDs are shared with other nodes; while in narrow dependency, its only used in the same machine</li>
+</ul>
+<h4 id="what-happens-when-a-worker-node-fails-the-spark-job-has-wide-dependency">What happens when a worker node fails the spark job has wide dependency?</h4>
+<ul>
+<li>the worker in the middle fails before computation is complete. now we need to compute all the narrow dependency steps that comes before wide dependency step across all the nodes</li>
+<li>this takes a lot of time and resources. this is solved persisting periodic checkpoints to file system like HDFS</li>
+</ul>
+<p><img src="https://prod-files-secure.s3.us-west-2.amazonaws.com/2f23d75d-8cd2-4d5a-9e68-9e5a290e391d/65b38a84-01b0-4b95-a951-3c747471c4fe/Untitled.png" alt="Untitled" /></p>
+<h3 id="spark-libraries">Spark Libraries</h3>
+<p>Spark Engine does all this. On top of this there are set of libraries like SparkSQL, SparkML, SparkStreaming, GraphX</p>
+<p>These different processing can be combined</p>
+<p><img src="https://prod-files-secure.s3.us-west-2.amazonaws.com/2f23d75d-8cd2-4d5a-9e68-9e5a290e391d/c58d57ae-b61f-4067-bd42-d6985d97b032/Untitled.png" alt="Untitled" /></p>
+<p><img src="https://prod-files-secure.s3.us-west-2.amazonaws.com/2f23d75d-8cd2-4d5a-9e68-9e5a290e391d/c6b937eb-fd64-4373-8006-f8cdc6843a06/Untitled.png" alt="Untitled" /></p>
+<h3 id="spark-context-vs-spark-session">Spark Context vs Spark Session</h3>
+<h4 id="sparkcontext">SparkContext:</h4>
+<ol>
+<li>Origin: Introduced in early versions of Spark.</li>
+<li>Purpose: It's the entry point for Spark functionality, mainly for RDD-based operations.</li>
+<li>Scope: One SparkContext per JVM (Java Virtual Machine).</li>
+<li>Usage: Used primarily with RDD API. considered low level API</li>
+<li>Configuration: Requires explicit configuration of SparkConf.</li>
+</ol>
+<h4 id="sparksession">SparkSession:</h4>
+<ol>
+<li>Origin: Introduced in Spark 2.0 as part of the unified API.</li>
+<li>Purpose: Provides a single point of entry to interact with Spark functionality.</li>
+<li>Scope: Multiple SparkSessions can exist in the same JVM.</li>
+<li>Usage: Used with DataFrame and Dataset APIs, as well as SQL. also supports RDD via spark context</li>
+<li>Configuration: Can be created with simpler builder methods.</li>
+</ol>
+<h3 id="why-use-structured-spark-apis-like-dataframes-datasets-instead-of-rdds">Why use Structured Spark APIs like DataFrames &amp; DataSets instead of RDDs</h3>
+<ul>
+<li>RDDs are very low level APIs of spark, so chance of writing inefficient code is high. Its like writing code in Assembly language.</li>
+<li>writing RDDs will give you control, but spark can make very little improvement on RDD level API code.</li>
+</ul>
+<p><img src="https://prod-files-secure.s3.us-west-2.amazonaws.com/2f23d75d-8cd2-4d5a-9e68-9e5a290e391d/51ae25e8-d9c7-4f92-b6b1-51507bbccfa6/Untitled.png" alt="Untitled" /></p>
+<ul>
+<li>Structured API allows you do things in more declarative ways. Optimizations are done by Spark.</li>
+<li>They are high level. Ease of use and readability.</li>
+<li>You write ‘What-to-do’ instead of ‘How-to-do’.</li>
+</ul>
+
+  </main>
+  <p>
+        Tags:
+          <a href="/tags/distributed-systems/">#distributed systems</a>
+  </p>
+<footer>
+</footer>
+</body>
+</html>

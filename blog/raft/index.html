@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notes on Raft | </title>
+    <meta name="title" content="Notes on Raft">
+<meta name="description" content="">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono&family=Merriweather+Sans:wght@300&family=Merriweather:wght@300&display=swap" rel="stylesheet">
+    <style>
+        :root {
+    --width: 800px;
+    --font-main: Verdana, Merriweather, Merriweather Sans, sans-serif;
+    --font-secondary: Verdana, Merriweather, Merriweather Sans, sans-serif;
+    --font-scale: 1em;
+    --background-color: #fff;
+    --heading-color: #222;
+    --text-color: #444;
+    --link-color: #3273dc;
+    --visited-color: #8b6fcb;
+    --code-background-color: #f2f2f2;
+    --code-color: #222;
+    --blockquote-color: #222;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --background-color: #01242e;
+        --heading-color: #eee;
+        --text-color: #ddd;
+        --link-color: #8cc2dd;
+        --visited-color: #8b6fcb;
+        --code-background-color: #000;
+        --code-color: #ddd;
+        --blockquote-color: #ccc;
+    }
+}
+
+body {
+    font-family: var(--font-secondary);
+    font-size: var(--font-scale);
+    margin: auto;
+    padding:20px;
+    max-width: var(--width);
+    text-align: left;
+    background-color: var(--background-color);
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    line-height: 1.5;
+    color: var(--text-color);
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-main);
+    color: var(--heading-color);
+}
+
+a {
+    color: var(--link-color); cursor: pointer; text-decoration: none;
+}
+a:hover {
+    text-decoration: underline;
+}
+
+nav a {
+    margin-right: 8px;
+}
+nav span.active {
+    font-weight: bold;
+    margin-right: 10px;
+}
+
+strong, b {
+    color: var(--heading-color);
+}
+
+button {
+    margin: 0;
+    cursor: pointer;
+}
+
+main {
+    line-height: 1.6;
+}
+
+table {
+    width: 100%;
+}
+
+hr {
+    border: 0;
+    border-top: 1px
+    dashed;
+}
+
+img {
+    max-width: 100%;
+}
+
+pre code {
+    background-color: var(--code-background-color);
+    color: var(--code-color);
+    display: block;
+    padding: 20px;
+    white-space: pre-wrap;
+    font-size: 0.875rem;
+    overflow-x: auto;
+}
+
+code {
+    font-family: JetBrains Mono, monospace;
+    padding: 2px;
+    background-color: var(--code-background-color);
+    color: var(--code-color);
+    border-radius: 3px;
+}
+
+blockquote {
+    border-left: 1px solid #999;
+    color: var(--code-color);
+    padding-left: 20px;
+    font-style: italic;
+}
+
+footer {
+    padding: 25px 0;
+    text-align: center;
+}
+
+.title:hover { text-decoration: none; }
+.title h1 { font-size: 1.5em;}
+.inline { width: auto !important; }
+.highlight,
+.code { padding: 1px 15px;
+    background-color: var(--code-background-color);
+    color: var(--code-color);
+    border-radius: 3px;
+    margin-block-start: 1em;
+    margin-block-end: 1em;
+    overflow-x: auto;
+}
+
+/* blog post list */
+ul.blog-posts { list-style-type: none; padding:unset; }
+ul.blog-posts li { display: flex; }
+ul.blog-posts li span { flex: 0 0 130px; }
+ul.blog-posts li a:visited { color: var(--visited-color); }
+.tags {font-size: smaller; }
+
+    </style>
+</head>
+<body>
+  <header>
+  <a href="/" class="title">
+    <h1></h1>
+  </a>
+  <nav aria-label="site">
+      <a href="/">Home</a>
+      <a href="/blog/">Blog</a>
+      <a href="/projects/">Projects</a>
+      <a href="/misc/">misc.</a>
+  </nav>
+</header>
+<h1>Notes on Raft</h1>
+      <p>
+        <i>
+          <time datetime="2024-08-10T00:00:00+00:00" pubdate>2024-08-10</time>
+        </i>
+      </p>
+    <details open>
+      <summary>Table of contents</summary>
+    <ul>
+        <li>
+          <a href="/blog/raft/#writes">Writes:</a>
+        </li>
+        <li>
+          <a href="/blog/raft/#reads">Reads:</a>
+        </li>
+        <li>
+          <a href="/blog/raft/#leader-election">Leader Election:</a>
+        </li>
+        <li>
+          <a href="/blog/raft/#log-replication">Log replication</a>
+        </li>
+        <li>
+          <a href="/blog/raft/#safety">Safety</a>
+        </li>
+    </ul>
+    </details>
+  <main>
+    <p>Raft is a protocol for implementing distributed consensus. Raft builds a replicated state machine using a Replicated log. It considers log as a source of truth and can be used to build inearizable storage.</p>
+<h3 id="writes">Writes:</h3>
+<ul>
+<li>clients first write to leader. the leader then sends the write to all the followers.</li>
+<li>followers can respond ‘yes’ or ‘no’ indicating that they have written the value to their log
+<ul>
+<li>prefix: a point or index in the log, anything previous to the prefix will be same on leader and follower</li>
+<li>suffix: a point in log, where anything beyond this index in the log may not be in sync wrt to leader and follower</li>
+<li>whenever writes are proposed, leader sends a prefix and suffix. if the prefix matches with log in follower, follower accepts it and responds ‘yes’</li>
+<li>if the prefix is not matched, it responds ‘no’. and the leader retries again with (prefix-1)</li>
+</ul>
+</li>
+<li>if the leader gets majority ‘yes’ from the followers, a quorum is reached. leader commits the message to itself</li>
+<li>sends the commit message to all the followers saying this is the value to commit.</li>
+<li>followers then commit and persist that write.</li>
+</ul>
+<h3 id="reads">Reads:</h3>
+<ul>
+<li>
+<p>if a client reads from a follower and realizes that data is stale, it sends a SYNC signal to leader</p>
+</li>
+<li>
+<p>leader propagates this to all followers indicating, to update themselves.</p>
+</li>
+<li>
+<p>once the follower is updated, the client reads from the follower</p>
+</li>
+<li>
+<p>Leader Election</p>
+<ul>
+<li>Select one of the servers to act as a leader</li>
+</ul>
+</li>
+<li>
+<p>Log replication</p>
+<ul>
+<li>leader takes commands from the clients, appends it to the log</li>
+<li>leader replicates its log to the followers or other servers (over writing inconsistencies)</li>
+</ul>
+</li>
+<li>
+<p>Safety</p>
+<ul>
+<li>only a server with up-to-date log can become the leader</li>
+</ul>
+</li>
+</ul>
+<h3 id="leader-election">Leader Election:</h3>
+<ul>
+<li>Election happens after the timeout. It can happen automatically or it can happen after a leader goes offline.</li>
+<li>A leader continues to be a leader of a term until a follower stops receiving heartbeats</li>
+<li>Terms - or term number
+<ul>
+<li>its a increasing value that represents a term.</li>
+<li>all nodes including leader will be in the same term.</li>
+<li>anything lower than this term number will not accepted by the follower nodes.</li>
+<li>each time when leader election happens, a node which is trying to become the leader proposes an incremented term number, when asking for votes from other nodes</li>
+</ul>
+</li>
+<li>the node which wants to become the leader, increases the term number and asks other nodes to vote. This node also votes itself</li>
+<li>when it gets majority of votes, it becomes the leader and sends out a heartbeat to others</li>
+</ul>
+<h3 id="log-replication">Log replication</h3>
+<h4 id="normal-case-log-replication">Normal case Log replication</h4>
+<ul>
+<li>leader sends out replication requests to replicas.</li>
+<li>prefix and suffix are also called match index and next index
+<ul>
+<li>replica and leader agrees everything up to match index</li>
+<li>new entires will be added to next index</li>
+</ul>
+</li>
+<li>once a log entry reaches majority of the clusters, it is committed. otherwise the log entry will be in uncommitted state in all of the replicas and the leader</li>
+</ul>
+<h4 id="log-replication-when-there-are-inconsistencies">Log replication when there are inconsistencies</h4>
+<h5 id="missing-entires">missing entires</h5>
+<ul>
+<li>when a replica which was offline for a long time comes up, it will be behind in its log state. So every time leader sends the message to replicate a log, it also asks the replica for a value at index with an term t (term 2 here). do you have a value at index-3 from term-2? if no, the next index moves back, until the leader finds an agreeable value</li>
+<li>then missing values are copied and indexes are moved to make the replica up to date</li>
+</ul>
+<p align="center">
+    <img src="../../imgs/raft1.png"/>
+</p>
+<h5 id="extraneous-entries">extraneous entries</h5>
+<ul>
+<li>when a replica (which was a leader before) comes online and it has some uncommitted changes, those will be overwritten</li>
+<li>the new leader sends out a check similar to asking term and logs, the uncommitted entries are overwritten</li>
+<li>this is how s1(pre leader) with uncommitted changes look like. new leader s2 is sending message to s1 asking for the term at the index and over writes it</li>
+</ul>
+<p align="center">
+    <img src="../../imgs/raft2.png"/>
+</p>
+<h3 id="safety">Safety</h3>
+<ul>
+<li>when a candidate (a node which asks for vote become leader) asks for vote to become the leader, it also sends the status of its log.
+<ul>
+<li>what status is sent? - term of the last log entry and length of the log</li>
+</ul>
+</li>
+<li>in the above case, S5 is does not have any entry in the log. when it tries become the leader, other nodes which have more up to date logs rejects S5 as leader and does not vote.</li>
+<li>during the next timeout, a new candidate with more up to date log becomes a leader</li>
+</ul>
+<p>Types of messages used:</p>
+<ul>
+<li>Request Vote</li>
+<li>Append Entry</li>
+</ul>
+
+  </main>
+  <p>
+        Tags:
+          <a href="/tags/distributed-systems/">#distributed systems</a>
+  </p>
+<footer>
+</footer>
+</body>
+</html>
