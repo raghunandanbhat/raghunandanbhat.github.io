@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>neovim - Things you should know before you start | </title>
+    <meta name="title" content="neovim - Things you should know before you start">
+<meta name="description" content="">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono&family=Merriweather+Sans:wght@300&family=Merriweather:wght@300&display=swap" rel="stylesheet">
+    <style>
+        :root {
+    --width: 800px;
+    --font-main: Verdana, Merriweather, Merriweather Sans, sans-serif;
+    --font-secondary: Verdana, Merriweather, Merriweather Sans, sans-serif;
+    --font-scale: 1em;
+    --background-color: #fff;
+    --heading-color: #222;
+    --text-color: #444;
+    --link-color: #3273dc;
+    --visited-color: #8b6fcb;
+    --code-background-color: #f2f2f2;
+    --code-color: #222;
+    --blockquote-color: #222;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --background-color: #01242e;
+        --heading-color: #eee;
+        --text-color: #ddd;
+        --link-color: #8cc2dd;
+        --visited-color: #8b6fcb;
+        --code-background-color: #000;
+        --code-color: #ddd;
+        --blockquote-color: #ccc;
+    }
+}
+
+body {
+    font-family: var(--font-secondary);
+    font-size: var(--font-scale);
+    margin: auto;
+    padding:20px;
+    max-width: var(--width);
+    text-align: left;
+    background-color: var(--background-color);
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    line-height: 1.5;
+    color: var(--text-color);
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-main);
+    color: var(--heading-color);
+}
+
+a {
+    color: var(--link-color); cursor: pointer; text-decoration: none;
+}
+a:hover {
+    text-decoration: underline;
+}
+
+nav a {
+    margin-right: 8px;
+}
+nav span.active {
+    font-weight: bold;
+    margin-right: 10px;
+}
+
+strong, b {
+    color: var(--heading-color);
+}
+
+button {
+    margin: 0;
+    cursor: pointer;
+}
+
+main {
+    line-height: 1.6;
+}
+
+table {
+    width: 100%;
+}
+
+hr {
+    border: 0;
+    border-top: 1px
+    dashed;
+}
+
+img {
+    max-width: 100%;
+}
+
+pre code {
+    background-color: var(--code-background-color);
+    color: var(--code-color);
+    display: block;
+    padding: 20px;
+    white-space: pre-wrap;
+    font-size: 0.875rem;
+    overflow-x: auto;
+}
+
+code {
+    font-family: JetBrains Mono, monospace;
+    padding: 2px;
+    background-color: var(--code-background-color);
+    color: var(--code-color);
+    border-radius: 3px;
+}
+
+blockquote {
+    border-left: 1px solid #999;
+    color: var(--code-color);
+    padding-left: 20px;
+    font-style: italic;
+}
+
+footer {
+    padding: 25px 0;
+    text-align: center;
+}
+
+.title:hover { text-decoration: none; }
+.title h1 { font-size: 1.5em;}
+.inline { width: auto !important; }
+.highlight,
+.code { padding: 1px 15px;
+    background-color: var(--code-background-color);
+    color: var(--code-color);
+    border-radius: 3px;
+    margin-block-start: 1em;
+    margin-block-end: 1em;
+    overflow-x: auto;
+}
+
+/* blog post list */
+ul.blog-posts { list-style-type: none; padding:unset; }
+ul.blog-posts li { display: flex; }
+ul.blog-posts li span { flex: 0 0 130px; }
+ul.blog-posts li a:visited { color: var(--visited-color); }
+.tags {font-size: smaller; }
+
+    </style>
+</head>
+<body>
+  <header>
+  <a href="/" class="title">
+    <h1></h1>
+  </a>
+  <nav aria-label="site">
+      <a href="/">Home</a>
+      <a href="/blog/">Blog</a>
+      <a href="/projects/">Projects</a>
+      <a href="/misc/">misc.</a>
+  </nav>
+</header>
+<h1>neovim - Things you should know before you start</h1>
+      <p>
+        <i>
+          <time datetime="2023-12-09T00:00:00+00:00" pubdate>2023-12-09</time>
+        </i>
+      </p>
+    <details open>
+      <summary>Table of contents</summary>
+    <ul>
+        <li>
+          <a href="/blog/nvim/#neovim">neovim</a>
+        </li>
+        <li>
+          <a href="/blog/nvim/#plugin-manager">Plugin Manager</a>
+        </li>
+        <li>
+          <a href="/blog/nvim/#fuzzy-finder">Fuzzy Finder</a>
+        </li>
+        <li>
+          <a href="/blog/nvim/#tree-sitter">Tree-sitter</a>
+        </li>
+        <li>
+          <a href="/blog/nvim/#language-server-protocol">Language Server Protocol</a>
+        </li>
+        <li>
+          <a href="/blog/nvim/#vim-key-mapping">vim key mapping</a>
+        </li>
+    </ul>
+    </details>
+  <main>
+    <p>If you have time or nothing exciting going at work or you want your code editor to break like your production and you want to spend hours fixing it, you should try neovim. Also, if you move around fast on your computer screens, people assume you’re smart, but that’s not what makes you smart. Configure your neovim, make it work and I’ll consider you smart. Trolling aside, let’s get started.</p>
+<p>In all seriousness, these are the things you should know before you try to write your neovim config. This is not a guide to writing your neovim config, it's a step 0. It explains what's what and why you need it.</p>
+<h3 id="neovim">neovim</h3>
+<p>Best IDE or should I say PDE - personal development environment. It's a VIM based text editor and if you have ever used a terminal, I' sure you know what VIM is. It's not as bad as you think it is when freshly installed, but you can make it better.</p>
+<h3 id="plugin-manager">Plugin Manager</h3>
+<p>If you want to make neovim look, feel and function better, you need plugins. To install and manage them you need a plugin manager. There’s packer.nvim, lazy.nvim, etc
+Whenever you want to add/change something to the neovim editor, like a color schemes or fuzzy finders, you have to install them using this Plugin manager.</p>
+<h3 id="fuzzy-finder">Fuzzy Finder</h3>
+<p>Fancy way of saying - ‘search button’, except there is no button here. It lets you search and get to those places fast and you don’t have to click. There’s telescope, harpoon(not exactly, but something close).</p>
+<h3 id="tree-sitter">Tree-sitter</h3>
+<p>Yet another fancy word to say - language parser, it's a set of programming language parsers, so that your neovim can easily understand your code text and do certain things with it (like syntax highlighting, etc). Let me try to simplify it.
+You write code in Python, you and I know that syntax. But for your overpowered editor, it's just a text. To make sure you’re writing correct syntax, we need this tree sitter.
+What tree sitter does is, break down your code according to grammar of your programming language and creates a parse tree. Based on this, it highlights your code. If you edit your code, it just updates part of the parse tree, that’s why it is fast. If you want to know more, read <a href="https://thevaluable.dev/tree-sitter-neovim-overview/">this</a>.
+If you don’t want to know any of this, just remember - make sure your tree sitter has parser for all programming languages you use(yes, including Haskell), otherwise no syntax highlighting.</p>
+<h3 id="language-server-protocol">Language Server Protocol</h3>
+<p>Auto complete, jumpt to definition, find-references, renaming, refactoring and all other goodness of full fledged editor is enabled by LSP.</p>
+<h3 id="vim-key-mapping">vim key mapping</h3>
+<p>These are keyboard shortcuts. This what makes you move faster and makes you look smart in your group, unless there’s another neovimmer who’s faster than you. You can create your own obscure key maps and make your editor unusable to others (that’s why its called a PDE and not an IDE).</p>
+<p>Now that you know the basics, go get started.</p>
+
+  </main>
+  <p>
+        Tags:
+          <a href="/tags/neovim/">#neovim</a>
+          <a href="/tags/ide/">#IDE</a>
+  </p>
+<footer>
+</footer>
+</body>
+</html>

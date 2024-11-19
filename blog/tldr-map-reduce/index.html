@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TLDR - Map Reduce (2004) | </title>
+    <meta name="title" content="TLDR - Map Reduce (2004)">
+<meta name="description" content="">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono&family=Merriweather+Sans:wght@300&family=Merriweather:wght@300&display=swap" rel="stylesheet">
+    <style>
+        :root {
+    --width: 800px;
+    --font-main: Verdana, Merriweather, Merriweather Sans, sans-serif;
+    --font-secondary: Verdana, Merriweather, Merriweather Sans, sans-serif;
+    --font-scale: 1em;
+    --background-color: #fff;
+    --heading-color: #222;
+    --text-color: #444;
+    --link-color: #3273dc;
+    --visited-color: #8b6fcb;
+    --code-background-color: #f2f2f2;
+    --code-color: #222;
+    --blockquote-color: #222;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --background-color: #01242e;
+        --heading-color: #eee;
+        --text-color: #ddd;
+        --link-color: #8cc2dd;
+        --visited-color: #8b6fcb;
+        --code-background-color: #000;
+        --code-color: #ddd;
+        --blockquote-color: #ccc;
+    }
+}
+
+body {
+    font-family: var(--font-secondary);
+    font-size: var(--font-scale);
+    margin: auto;
+    padding:20px;
+    max-width: var(--width);
+    text-align: left;
+    background-color: var(--background-color);
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    line-height: 1.5;
+    color: var(--text-color);
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-main);
+    color: var(--heading-color);
+}
+
+a {
+    color: var(--link-color); cursor: pointer; text-decoration: none;
+}
+a:hover {
+    text-decoration: underline;
+}
+
+nav a {
+    margin-right: 8px;
+}
+nav span.active {
+    font-weight: bold;
+    margin-right: 10px;
+}
+
+strong, b {
+    color: var(--heading-color);
+}
+
+button {
+    margin: 0;
+    cursor: pointer;
+}
+
+main {
+    line-height: 1.6;
+}
+
+table {
+    width: 100%;
+}
+
+hr {
+    border: 0;
+    border-top: 1px
+    dashed;
+}
+
+img {
+    max-width: 100%;
+}
+
+pre code {
+    background-color: var(--code-background-color);
+    color: var(--code-color);
+    display: block;
+    padding: 20px;
+    white-space: pre-wrap;
+    font-size: 0.875rem;
+    overflow-x: auto;
+}
+
+code {
+    font-family: JetBrains Mono, monospace;
+    padding: 2px;
+    background-color: var(--code-background-color);
+    color: var(--code-color);
+    border-radius: 3px;
+}
+
+blockquote {
+    border-left: 1px solid #999;
+    color: var(--code-color);
+    padding-left: 20px;
+    font-style: italic;
+}
+
+footer {
+    padding: 25px 0;
+    text-align: center;
+}
+
+.title:hover { text-decoration: none; }
+.title h1 { font-size: 1.5em;}
+.inline { width: auto !important; }
+.highlight,
+.code { padding: 1px 15px;
+    background-color: var(--code-background-color);
+    color: var(--code-color);
+    border-radius: 3px;
+    margin-block-start: 1em;
+    margin-block-end: 1em;
+    overflow-x: auto;
+}
+
+/* blog post list */
+ul.blog-posts { list-style-type: none; padding:unset; }
+ul.blog-posts li { display: flex; }
+ul.blog-posts li span { flex: 0 0 130px; }
+ul.blog-posts li a:visited { color: var(--visited-color); }
+.tags {font-size: smaller; }
+
+    </style>
+</head>
+<body>
+  <header>
+  <a href="/" class="title">
+    <h1></h1>
+  </a>
+  <nav aria-label="site">
+      <a href="/">Home</a>
+      <a href="/blog/">Blog</a>
+      <a href="/projects/">Projects</a>
+      <a href="/misc/">misc.</a>
+  </nav>
+</header>
+<h1>TLDR - Map Reduce (2004)</h1>
+      <p>
+        <i>
+          <time datetime="2024-06-24T00:00:00+00:00" pubdate>2024-06-24</time>
+        </i>
+      </p>
+    <details open>
+      <summary>Table of contents</summary>
+    <ul>
+        <li>
+          <a href="/blog/tldr-map-reduce/#programming-model">Programming Model</a>
+        </li>
+        <li>
+          <a href="/blog/tldr-map-reduce/#how-it-works">How it works</a>
+        </li>
+        <li>
+          <a href="/blog/tldr-map-reduce/#fault-tolerance">Fault Tolerance:</a>
+        </li>
+    </ul>
+    </details>
+  <main>
+    <p><a href="https://static.googleusercontent.com/media/research.google.com/en//archive/mapreduce-osdi04.pdf">paper</a></p>
+<p>map reduce is a programming model and associated implementation to process large data sets. this was inspired from <em>map-reduce functionality in the functional programming languages</em>.</p>
+<h3 id="programming-model">Programming Model</h3>
+<ul>
+<li><code>map</code> functions take a key-value pair and to generate a set of intermediate key-value pair. This is a user written function that accepts a kv pair and generates a kv-pair</li>
+<li>The MapReduce library takes the intermediate result, groups them by the same intermediate key and passes it to <code>reduce</code> function</li>
+<li><code>reduce</code> function takes a intermediate key-value pairs and merges all intermediate values associated with the same intermediate key</li>
+<li>this function is also written by user, which accepts the intermediate key <code>k</code> and a set of values for that key. it merges them into a smaller set of values.</li>
+<li>Typically input kv pair comes from a map-reduce step and the output is also consumed by another map-reduce step</li>
+<li>for ex: you have set of docs [doc_name, doc_contents]. pass it to <code>map</code> function, map splits the content and counts the words in the document, generating (word: 1) key value pair. this intermediate kv pair is sent to reduce <code>reduce</code> function, which adds the frequency of each word by combining results of word. The result of the reduce function is also a key-value pair, that could be sent to another set of map-reduce functions</li>
+</ul>
+<pre data-lang="python" style="background-color:#2b303b;color:#c0c5ce;" class="language-python "><code class="language-python" data-lang="python"><span style="color:#b48ead;">def </span><span style="color:#8fa1b3;">map</span><span>(</span><span style="color:#bf616a;">key</span><span>:str, </span><span style="color:#bf616a;">value</span><span>:str):
+</span><span>	</span><span style="color:#65737e;"># key: document name
+</span><span>	</span><span style="color:#65737e;"># value: document content
+</span><span>	</span><span style="color:#b48ead;">for </span><span>word </span><span style="color:#b48ead;">in </span><span>value:
+</span><span>		</span><span style="color:#bf616a;">emit_intermediate</span><span>(word, </span><span style="color:#d08770;">1</span><span>)
+</span><span>
+</span><span style="color:#b48ead;">def </span><span style="color:#8fa1b3;">reduce</span><span>(</span><span style="color:#bf616a;">key</span><span>:str, </span><span style="color:#bf616a;">values</span><span>:[Iterator]):
+</span><span>	</span><span style="color:#65737e;"># key: a word from map
+</span><span>	</span><span style="color:#65737e;"># values: list of aggregated values from intermediate step
+</span><span>	</span><span style="color:#65737e;"># count of word
+</span><span>	freq = {}
+</span><span>	</span><span style="color:#b48ead;">for </span><span>k, vals </span><span style="color:#b48ead;">in </span><span>values.</span><span style="color:#bf616a;">items</span><span>():
+</span><span>		</span><span style="color:#b48ead;">for </span><span>v </span><span style="color:#b48ead;">in </span><span>vals:
+</span><span>			freq[k] = freq.</span><span style="color:#bf616a;">get</span><span>(k, </span><span style="color:#d08770;">0</span><span>) + </span><span style="color:#bf616a;">int</span><span>(v)
+</span><span>		</span><span style="color:#bf616a;">emit</span><span>(freq[k])
+</span></code></pre>
+<p><img src="https://prod-files-secure.s3.us-west-2.amazonaws.com/2f23d75d-8cd2-4d5a-9e68-9e5a290e391d/07f1b496-cf31-411d-9974-7c1811822995/Untitled.png" alt="Untitled" /></p>
+<h3 id="how-it-works">How it works</h3>
+<ul>
+<li>map-reduce library splits the file into 16-64 MB chunks</li>
+<li>If there are <strong>M</strong> map tasks, <strong>R</strong> reducer tasks, controlled by the master</li>
+<li>master picks up a input split, assigns it to a free worker. Worker reads the file, parses it and passes it onto user defined map function. this map functions generates intermediate key-value pair are buffered in-memory</li>
+<li>Periodicallly, buffered pairs are written to local disk, partitioned into R regions. location of these are sent to master, who’s responsible for forwarding them to reduce workers</li>
+<li>when reducer is notified, it uses a RPC to read from the local disk of the map worker. it groups the data using based on the intermediate keys</li>
+<li>reduce worker iterates over the key, for each unique key, it passes the corresponding values to user’s reduce function. the output of the reduce function is appended to the output file</li>
+<li>When all map and reducer tasks are done, master wakes up the user program. at this point, the MapReduce function call in the user program returns the value. outputs are available in R different output files. these are generally passed onto another map reduce functions to further generate result</li>
+</ul>
+<h3 id="fault-tolerance">Fault Tolerance:</h3>
+<h4 id="worker-failures">Worker Failures</h4>
+<ul>
+<li>Master maintains the state of each worker (idle, in-progress, completed).</li>
+<li>It periodically pings the worker to check if it is fine. If it receives no response, the map task assigned to it is reset and re-assigned to other available workers</li>
+<li>Failed workers are reset to idle state and work is assigned</li>
+<li>same process with reduce workers as well.</li>
+<li>If a map task at worker-A fails, and it is later executed by worker-B, all reduce workers will be notified of the re-execution. Any worker that has not read from worker-A, will now read from worker-B</li>
+</ul>
+<h4 id="master-failure">Master Failure</h4>
+<ul>
+<li>Master data structure is check-pointed periodically to store master’s state</li>
+<li>If the master fails, it uses the most recent checkpoint for recovery</li>
+</ul>
+<p>Map-Reduce is just a programming model, supported by a master-worker style architecture. There are multiple use cases and enhancements done over this.</p>
+<p>Advantages:</p>
+<ul>
+<li>Easy to use for anyone without parallel &amp; distributed systems</li>
+<li>large-scale data processing made easy with parallellization</li>
+</ul>
+
+  </main>
+  <p>
+        Tags:
+          <a href="/tags/distributed-systems/">#distributed systems</a>
+  </p>
+<footer>
+</footer>
+</body>
+</html>
