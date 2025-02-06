@@ -3,7 +3,20 @@ title = "misc"
 sort_by = "date"
 extra.hide_table_of_contents = true
 +++
-### Long list of blogs/article/bookmarks/whatever I find interesting-
+### Long list of blogs/article/videos/bookmarks/whatever I find interesting-
+* Feb 2025
+  * [Understanding Reasoning LLMs by Sebastian Raschka](https://sebastianraschka.com/blog/2025/understanding-reasoning-llms.html)
+  * [Deterministic Simulation Testing by Ben Collins](https://www.youtube.com/watch?v=IaB8jvjW0kk)
+---
+* Jan 2025
+  * [Push based execution in DuckDB by Mark Raasveldt](https://www.youtube.com/watch?v=5fXCKlZAHGA)
+  * [Gallery of Processor Cache Effects by Igor Ostrovsky](https://igoro.com/archive/gallery-of-processor-cache-effects/)
+  * [Garbage Collection for Systems Programmers](https://bitbashing.io/gc-for-systems-programmers.html#)
+---
+* Dec 2024
+  * [Learning Rust With Entirely Too Many Linked Lists](https://cglab.ca/~abeinges/blah/too-many-lists/book/README.html)
+  * [Developer Voices](https://www.youtube.com/@DeveloperVoices)
+---
 * Nov 2024
   * [Alex Miller's blog](https://transactional.blog/)
   * [Alex Miller's Userland Disk I/O](https://transactional.blog/how-to-learn/disk-io)

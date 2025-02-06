@@ -2,9 +2,9 @@
 +++
 # Raghunandan Bhat
 
-I'm Raghunandan Bhat, software developer based in USA. Originally from India.
+I'm Raghunandan Bhat, Software Developer working on database systems and a part-time beekeeper.
 
-I try to build simple things. I like Software Engineering, Distributed Systems, Open Source Software and a little bit of Machine Learning.
+I try to build simple things. I like Databases, Distributed Systems, Open Source Software and a little bit of Machine Learning.
 
 Sometimes I write here, checkout [blog](/blog).
 
