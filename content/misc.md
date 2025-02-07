@@ -7,6 +7,7 @@ extra.hide_table_of_contents = true
 * Feb 2025
   * [Understanding Reasoning LLMs by Sebastian Raschka](https://sebastianraschka.com/blog/2025/understanding-reasoning-llms.html)
   * [Deterministic Simulation Testing by Ben Collins](https://www.youtube.com/watch?v=IaB8jvjW0kk)
+  * [How concurrency works: A visual guide](https://wyounas.github.io/concurrency/2024/12/12/how-concurrency-works-a-visual-guide/)
 ---
 * Jan 2025
   * [Push based execution in DuckDB by Mark Raasveldt](https://www.youtube.com/watch?v=5fXCKlZAHGA)
@@ -14,6 +15,7 @@ extra.hide_table_of_contents = true
   * [Garbage Collection for Systems Programmers](https://bitbashing.io/gc-for-systems-programmers.html#)
 ---
 * Dec 2024
+  * [AI/ML/RL blogs](https://www.naklecha.com/) by [@naklecha](https://x.com/naklecha)
   * [Learning Rust With Entirely Too Many Linked Lists](https://cglab.ca/~abeinges/blah/too-many-lists/book/README.html)
   * [Developer Voices](https://www.youtube.com/@DeveloperVoices)
 ---
