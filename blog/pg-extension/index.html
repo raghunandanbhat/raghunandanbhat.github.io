@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How Postgres Extensions Actually work | </title>
+    <meta name="title" content="How Postgres Extensions Actually work">
+<meta name="description" content="">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono&family=Merriweather+Sans:wght@300&family=Merriweather:wght@300&display=swap" rel="stylesheet">
+    <style>
+        :root {
+    --width: 800px;
+    --font-main: Verdana, Merriweather, Merriweather Sans, sans-serif;
+    --font-secondary: Verdana, Merriweather, Merriweather Sans, sans-serif;
+    --font-scale: 1em;
+    --background-color: #fff;
+    --heading-color: #222;
+    --text-color: #444;
+    --link-color: #3273dc;
+    --visited-color: #8b6fcb;
+    --code-background-color: #f2f2f2;
+    --code-color: #222;
+    --blockquote-color: #222;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --background-color: #01242e;
+        --heading-color: #eee;
+        --text-color: #ddd;
+        --link-color: #8cc2dd;
+        --visited-color: #8b6fcb;
+        --code-background-color: #000;
+        --code-color: #ddd;
+        --blockquote-color: #ccc;
+    }
+}
+
+body {
+    font-family: var(--font-secondary);
+    font-size: var(--font-scale);
+    margin: auto;
+    padding:20px;
+    max-width: var(--width);
+    text-align: left;
+    background-color: var(--background-color);
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    line-height: 1.5;
+    color: var(--text-color);
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-main);
+    color: var(--heading-color);
+}
+
+a {
+    color: var(--link-color); cursor: pointer; text-decoration: none;
+}
+a:hover {
+    text-decoration: underline;
+}
+
+nav a {
+    margin-right: 8px;
+}
+nav span.active {
+    font-weight: bold;
+    margin-right: 10px;
+}
+
+strong, b {
+    color: var(--heading-color);
+}
+
+button {
+    margin: 0;
+    cursor: pointer;
+}
+
+main {
+    line-height: 1.6;
+}
+
+table {
+    width: 100%;
+}
+
+hr {
+    border: 0;
+    border-top: 1px
+    dashed;
+}
+
+img {
+    max-width: 100%;
+}
+
+pre code {
+    background-color: var(--code-background-color);
+    color: var(--code-color);
+    display: block;
+    padding: 20px;
+    white-space: pre-wrap;
+    font-size: 0.875rem;
+    overflow-x: auto;
+}
+
+code {
+    font-family: JetBrains Mono, monospace;
+    padding: 2px;
+    background-color: var(--code-background-color);
+    color: var(--code-color);
+    border-radius: 3px;
+}
+
+blockquote {
+    border-left: 1px solid #999;
+    color: var(--code-color);
+    padding-left: 20px;
+    font-style: italic;
+}
+
+footer {
+    padding: 25px 0;
+    text-align: center;
+}
+
+.title:hover { text-decoration: none; }
+.title h1 { font-size: 1.5em;}
+.inline { width: auto !important; }
+.highlight,
+.code { padding: 1px 15px;
+    background-color: var(--code-background-color);
+    color: var(--code-color);
+    border-radius: 3px;
+    margin-block-start: 1em;
+    margin-block-end: 1em;
+    overflow-x: auto;
+}
+
+/* blog post list */
+ul.blog-posts { list-style-type: none; padding:unset; }
+ul.blog-posts li { display: flex; }
+ul.blog-posts li span { flex: 0 0 130px; }
+ul.blog-posts li a:visited { color: var(--visited-color); }
+.tags {font-size: smaller; }
+
+    </style>
+</head>
+<body>
+  <header>
+  <a href="/" class="title">
+    <h1></h1>
+  </a>
+  <nav aria-label="site">
+      <a href="/">Home</a>
+      <a href="/blog/">Blog</a>
+      <a href="/projects/">Projects</a>
+      <a href="/misc/">misc.</a>
+  </nav>
+</header>
+<h1>How Postgres Extensions Actually work</h1>
+      <p>
+        <i>
+          <time datetime="2025-01-20T00:00:00+00:00" pubdate>2025-01-20</time>
+        </i>
+      </p>
+    <details open>
+      <summary>Table of contents</summary>
+    <ul>
+        <li>
+          <a href="/blog/pg-extension/#1-hooks-in-postgresql-architecture">1. Hooks in PostgreSQL Architecture</a>
+        </li>
+        <li>
+          <a href="/blog/pg-extension/#2-initialization-in-the-extension">2. Initialization in the Extension</a>
+        </li>
+        <li>
+          <a href="/blog/pg-extension/#3-how-postgresql-calls-hooks">3. How PostgreSQL Calls Hooks</a>
+        </li>
+        <li>
+          <a href="/blog/pg-extension/#4-registering-inithooks">4. Registering InitHooks()</a>
+        </li>
+        <li>
+          <a href="/blog/pg-extension/#5-example-planner-hook-implementation">5. Example: Planner Hook Implementation</a>
+        </li>
+        <li>
+          <a href="/blog/pg-extension/#6-what-happens-during-query-execution">6. What Happens During Query Execution?</a>
+        </li>
+    </ul>
+    </details>
+  <main>
+    <p>PostgreSQL extensions allow developers to modify or extend the behavior of the database server without changing its core source code. One of the key mechanisms used in extensions is hooks, which provide predefined points in the PostgreSQL code where custom logic can be injected. In this post, we'll explore how hooks work in PostgreSQL extensions and how they are initialized and called.</p>
+<h3 id="1-hooks-in-postgresql-architecture">1. Hooks in PostgreSQL Architecture</h3>
+<p>Hooks in PostgreSQL are implemented as extern function pointers within its core code. These hooks enable extensions to override or enhance specific database operations by assigning custom functions to them.</p>
+<p>For example, PostgreSQL provides a <code>planner_hook</code> that can modify the query planning process:</p>
+<pre data-lang="c++" style="background-color:#2b303b;color:#c0c5ce;" class="language-c++ "><code class="language-c++" data-lang="c++"><span style="color:#b48ead;">typedef void </span><span>(*planner_hook_type) (Query *parse, </span><span style="color:#b48ead;">int</span><span> cursorOptions, ParamListInfo boundParams);
+</span><span style="color:#b48ead;">extern</span><span> PGDLLIMPORT planner_hook_type planner_hook;
+</span></code></pre>
+<p>Here, <code>planner_hook</code> is a function pointer that extensions can assign to their custom function to alter query planning behavior.</p>
+<h3 id="2-initialization-in-the-extension">2. Initialization in the Extension</h3>
+<p>Hooks in PostgreSQL extensions are typically initialized inside a dedicated function, such as <code>InitHooks()</code>. This function assigns custom functions to the appropriate hooks while preserving the original behavior.</p>
+<p>Example:</p>
+<pre data-lang="c++" style="background-color:#2b303b;color:#c0c5ce;" class="language-c++ "><code class="language-c++" data-lang="c++"><span style="color:#b48ead;">static</span><span> planner_hook_type prev_planner_hook = </span><span style="color:#d08770;">NULL</span><span>;
+</span><span>
+</span><span style="color:#b48ead;">void </span><span style="color:#8fa1b3;">InitHooks</span><span>(</span><span style="color:#b48ead;">void</span><span>) {
+</span><span>    prev_planner_hook = planner_hook; </span><span style="color:#65737e;">// Save the original hook
+</span><span>    planner_hook = my_custom_planner_hook;
+</span><span>}
+</span></code></pre>
+<p>Here, the original <code>planner_hook</code> (if any) is stored for later use, and <code>planner_hook</code> is assigned to <code>my_custom_planner_hook</code>.</p>
+<h3 id="3-how-postgresql-calls-hooks">3. How PostgreSQL Calls Hooks</h3>
+<p>When PostgreSQL executes an operation with a hook available (e.g., planning, execution, transaction handling), it checks if the hook function pointer is set. If set, PostgreSQL calls the assigned function instead of executing its default behavior.</p>
+<p>For example, during query planning:</p>
+<pre data-lang="c++" style="background-color:#2b303b;color:#c0c5ce;" class="language-c++ "><code class="language-c++" data-lang="c++"><span style="color:#b48ead;">if </span><span>(planner_hook)
+</span><span>    </span><span style="color:#b48ead;">return </span><span>(*planner_hook)(parse, cursorOptions, boundParams);
+</span><span style="color:#b48ead;">else
+</span><span>    </span><span style="color:#b48ead;">return </span><span style="color:#bf616a;">standard_planner</span><span>(parse, cursorOptions, boundParams);
+</span></code></pre>
+<p>If an extension has set <code>planner_hook</code>, PostgreSQL calls <code>my_custom_planner_hook()</code>. Otherwise, it defaults to <code>standard_planner()</code>.</p>
+<h3 id="4-registering-inithooks">4. Registering <code>InitHooks()</code></h3>
+<p>The <code>InitHooks()</code> function is typically called when the extension is initialized. This can be done in two ways:</p>
+<p>Via the <code>_PG_init()</code> Function</p>
+<p>If your extension uses the <code>shared_preload_libraries</code> mechanism, PostgreSQL will call <code>_PG_init()</code> when the server loads the extension. You can call <code>InitHooks()</code> from within <code>_PG_init()</code>.</p>
+<p>Example:</p>
+<pre data-lang="c++" style="background-color:#2b303b;color:#c0c5ce;" class="language-c++ "><code class="language-c++" data-lang="c++"><span style="color:#b48ead;">void </span><span style="color:#8fa1b3;">_PG_init</span><span>(</span><span style="color:#b48ead;">void</span><span>) {
+</span><span>    </span><span style="color:#bf616a;">InitHooks</span><span>();
+</span><span>}
+</span></code></pre>
+<p>During Extension Execution</p>
+<p>If hooks need to be initialized dynamically, you might call <code>InitHooks()</code> from an SQL function or another entry point in your extension.</p>
+<h3 id="5-example-planner-hook-implementation">5. Example: Planner Hook Implementation</h3>
+<p>Here’s an example of a planner hook implementation:</p>
+<pre data-lang="c++" style="background-color:#2b303b;color:#c0c5ce;" class="language-c++ "><code class="language-c++" data-lang="c++"><span style="color:#b48ead;">static</span><span> PlannedStmt *</span><span style="color:#8fa1b3;">my_custom_planner_hook</span><span>(Query *</span><span style="color:#bf616a;">parse</span><span>, </span><span style="color:#b48ead;">int </span><span style="color:#bf616a;">cursorOptions</span><span>, ParamListInfo </span><span style="color:#bf616a;">boundParams</span><span>) {
+</span><span>    </span><span style="color:#bf616a;">elog</span><span>(INFO, &quot;</span><span style="color:#a3be8c;">Custom planner hook called</span><span>&quot;);
+</span><span>    </span><span style="color:#65737e;">// Optionally call the original planner
+</span><span>    </span><span style="color:#b48ead;">if </span><span>(prev_planner_hook)
+</span><span>        </span><span style="color:#b48ead;">return </span><span style="color:#bf616a;">prev_planner_hook</span><span>(parse, cursorOptions, boundParams);
+</span><span>    </span><span style="color:#b48ead;">else
+</span><span>        </span><span style="color:#b48ead;">return </span><span style="color:#bf616a;">standard_planner</span><span>(parse, cursorOptions, boundParams);
+</span><span>}
+</span><span>
+</span><span style="color:#b48ead;">void </span><span style="color:#8fa1b3;">InitHooks</span><span>(</span><span style="color:#b48ead;">void</span><span>) {
+</span><span>    prev_planner_hook = planner_hook; </span><span style="color:#65737e;">// Save the original hook
+</span><span>    planner_hook = my_custom_planner_hook; </span><span style="color:#65737e;">// Set the custom hook
+</span><span>}
+</span><span>
+</span><span style="color:#b48ead;">void </span><span style="color:#8fa1b3;">_PG_init</span><span>(</span><span style="color:#b48ead;">void</span><span>) {
+</span><span>    </span><span style="color:#bf616a;">InitHooks</span><span>();
+</span><span>}
+</span></code></pre>
+<h3 id="6-what-happens-during-query-execution">6. What Happens During Query Execution?</h3>
+<p>During query processing, PostgreSQL goes through multiple stages, including parsing, planning, and execution. At each stage, it checks if a corresponding hook is set. If a hook is assigned by an extension, the custom function executes, allowing modifications or additional logging.</p>
+
+  </main>
+  <p>
+        Tags:
+          <a href="/tags/database/">#database</a>
+  </p>
+<footer>
+</footer>
+</body>
+</html>
