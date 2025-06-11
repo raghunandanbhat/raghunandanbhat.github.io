@@ -4,6 +4,18 @@ sort_by = "date"
 extra.hide_table_of_contents = true
 +++
 ### Long list of blogs/article/videos/bookmarks/whatever I find interesting-
+[I haven't read all of this]
+* May 2025
+  * [Pierre Zemb's Blog](https://pierrezemb.fr/posts/learn-about-dst/)
+---
+* Apr 2025
+  * [Hardware Memory Models](https://research.swtch.com/hwmm)
+  * [Jeeps, Ferraris and Other Engineers](https://maheshba.bitbucket.io/blog/2025/04/29/cars.html)
+---
+* Mar 205
+  * [BTrees & DB Indexes by Planetscale](https://planetscale.com/blog/btrees-and-database-indexes)
+  * [How Query Engines Work](https://research.swtch.com/hwmm)
+--
 * Feb 2025
   * [Understanding Reasoning LLMs by Sebastian Raschka](https://sebastianraschka.com/blog/2025/understanding-reasoning-llms.html)
   * [Deterministic Simulation Testing by Ben Collins](https://www.youtube.com/watch?v=IaB8jvjW0kk)
