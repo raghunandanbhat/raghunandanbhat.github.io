@@ -2,9 +2,9 @@
 +++
 # Raghunandan Bhat
 
-I'm a Software Engineer working on database systems.
+I'm a Software Engineer working on databases.
 
-I like all kinds of Databases, Distributed Systems, Open Source Software and a little bit of Machine Learning. When I'm not writing code, I'm usually watching F1 or messing around with beekeeping.
+I like \[Distributed\] Database Systems, Open Source Software and a little bit of Machine Learning & Compiled Programming Languages. When I'm not writing code, I'm usually watching F1 or messing around with beekeeping.
 
 Sometimes I write here, checkout [blog](/blog).
 

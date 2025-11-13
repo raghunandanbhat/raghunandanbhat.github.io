@@ -5,6 +5,18 @@ extra.hide_table_of_contents = true
 +++
 ### Long list of blogs/article/videos/bookmarks/whatever I find interesting-
 [I haven't read all of this]
+* Oct 2025
+  * [Generalized Consensus](https://multigres.com/blog/generalized-consensus) - series of blogs by [Sugu](https://x.com/ssougou) at Multigress.
+---
+* Sep 2025
+  * [What's RCU - Part 1](https://lwn.net/Articles/262464/)
+  * [What's RCU - Part 2](https://lwn.net/Articles/263130/)
+---
+* Aug 2025
+  * [Untangling lifetimes by Ryan Fleury](https://www.rfleury.com/p/untangling-lifetimes-the-arena-allocator)
+  * [Jens Gustedt's Blog](https://gustedt.wordpress.com/)
+  * [Brain Dump](https://floooh.github.io/) by Andre Weissflog
+---
 * May 2025
   * [Pierre Zemb's Blog](https://pierrezemb.fr/posts/learn-about-dst/)
 ---
