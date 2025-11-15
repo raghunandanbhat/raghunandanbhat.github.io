@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TLDR - Hadoop and HDFS (2006) | </title>
+    <meta name="title" content="TLDR - Hadoop and HDFS (2006)">
+<meta name="description" content="">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono&family=Merriweather+Sans:wght@300&family=Merriweather:wght@300&display=swap" rel="stylesheet">
+    <style>
+        :root {
+    --width: 800px;
+    --font-main: Verdana, Merriweather, Merriweather Sans, sans-serif;
+    --font-secondary: Verdana, Merriweather, Merriweather Sans, sans-serif;
+    --font-scale: 1em;
+    --background-color: #fff;
+    --heading-color: #222;
+    --text-color: #444;
+    --link-color: #3273dc;
+    --visited-color: #8b6fcb;
+    --code-background-color: #f2f2f2;
+    --code-color: #222;
+    --blockquote-color: #222;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --background-color: #01242e;
+        --heading-color: #eee;
+        --text-color: #ddd;
+        --link-color: #8cc2dd;
+        --visited-color: #8b6fcb;
+        --code-background-color: #000;
+        --code-color: #ddd;
+        --blockquote-color: #ccc;
+    }
+}
+
+body {
+    font-family: var(--font-secondary);
+    font-size: var(--font-scale);
+    margin: auto;
+    padding:20px;
+    max-width: var(--width);
+    text-align: left;
+    background-color: var(--background-color);
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    line-height: 1.5;
+    color: var(--text-color);
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-main);
+    color: var(--heading-color);
+}
+
+a {
+    color: var(--link-color); cursor: pointer; text-decoration: none;
+}
+a:hover {
+    text-decoration: underline;
+}
+
+nav a {
+    margin-right: 8px;
+}
+nav span.active {
+    font-weight: bold;
+    margin-right: 10px;
+}
+
+strong, b {
+    color: var(--heading-color);
+}
+
+button {
+    margin: 0;
+    cursor: pointer;
+}
+
+main {
+    line-height: 1.6;
+}
+
+table {
+    width: 100%;
+}
+
+hr {
+    border: 0;
+    border-top: 1px
+    dashed;
+}
+
+img {
+    max-width: 100%;
+}
+
+pre code {
+    background-color: var(--code-background-color);
+    color: var(--code-color);
+    display: block;
+    padding: 20px;
+    white-space: pre-wrap;
+    font-size: 0.875rem;
+    overflow-x: auto;
+}
+
+code {
+    font-family: JetBrains Mono, monospace;
+    padding: 2px;
+    background-color: var(--code-background-color);
+    color: var(--code-color);
+    border-radius: 3px;
+}
+
+blockquote {
+    border-left: 1px solid #999;
+    color: var(--code-color);
+    padding-left: 20px;
+    font-style: italic;
+}
+
+footer {
+    padding: 25px 0;
+    text-align: center;
+}
+
+.title:hover { text-decoration: none; }
+.title h1 { font-size: 1.5em;}
+.inline { width: auto !important; }
+.highlight,
+.code { padding: 1px 15px;
+    background-color: var(--code-background-color);
+    color: var(--code-color);
+    border-radius: 3px;
+    margin-block-start: 1em;
+    margin-block-end: 1em;
+    overflow-x: auto;
+}
+
+/* blog post list */
+ul.blog-posts { list-style-type: none; padding:unset; }
+ul.blog-posts li { display: flex; }
+ul.blog-posts li span { flex: 0 0 130px; }
+ul.blog-posts li a:visited { color: var(--visited-color); }
+.tags {font-size: smaller; }
+
+    </style>
+</head>
+<body>
+  <header>
+  <a href="/" class="title">
+    <h1></h1>
+  </a>
+  <nav aria-label="site">
+      <a href="/">Home</a>
+      <a href="/blog/">Blog</a>
+      <a href="/projects/">Projects</a>
+      <a href="/misc/">misc.</a>
+  </nav>
+</header>
+<h1>TLDR - Hadoop and HDFS (2006)</h1>
+      <p>
+        <i>
+          <time datetime="2024-07-10T00:00:00+00:00" pubdate>2024-07-10</time>
+        </i>
+      </p>
+    <details open>
+      <summary>Table of contents</summary>
+    <ul>
+        <li>
+          <a href="/blog/tldr-hdfs-hadoop/#assumptions-and-goals">Assumptions and Goals</a>
+        </li>
+        <li>
+          <a href="/blog/tldr-hdfs-hadoop/#architecture">Architecture</a>
+        </li>
+        <li>
+          <a href="/blog/tldr-hdfs-hadoop/#drawbacks">Drawbacks</a>
+        </li>
+    </ul>
+    </details>
+  <main>
+    <p><a href="https://hadoop.apache.org/docs/stable/hadoop-project-dist/hadoop-hdfs/HdfsDesign.html">source</a></p>
+<p>inspired by MapReduce and Google File System</p>
+<p>It consists of 2 main parts</p>
+<ul>
+<li>HDFS - hadoop distributed file system</li>
+<li>Hadoop MapReduce (impl of MapReduce programming model)</li>
+</ul>
+<h3 id="assumptions-and-goals">Assumptions and Goals</h3>
+<ul>
+<li>Hardware failure is norm rather than an exception, so you need to make your file system more resilient to failures</li>
+<li>Streaming Data Access
+<ul>
+<li>application that run on HDFS need streaming access to the data set. These applications are not typically run on traditional file systems.</li>
+<li>HDFS is designed for batch processing rather than interactive use by users</li>
+<li>emphasis is on high throughput rather than latency of data access</li>
+</ul>
+</li>
+<li>Application that run on HDFS have large data sets, so it is tuned for large files</li>
+<li>HDFS applications need a write-once-read-many access models.</li>
+<li>Moving computation is cheaper than moving data
+<ul>
+<li>computation is much more efficient when it is done near the data on which it operates</li>
+<li>this is true especially when size of the data set is huge</li>
+<li>HDFS provides interfaces to for applications move closer to where data resides</li>
+</ul>
+</li>
+<li>Portability across different hardware and software</li>
+</ul>
+<h3 id="architecture">Architecture</h3>
+<ul>
+<li>Follows a Master/Slave architecture</li>
+<li>there is a single master called - NameNode
+<ul>
+<li>that manages file system namespace and regulates accessibility to clients</li>
+<li>maps blocks to respective DataNodes in the cluster</li>
+<li>executes file system namespace operations like open, close, renaming files and directories</li>
+</ul>
+</li>
+<li>HDFS provides file system namespace and allows user data to be stored in files.</li>
+<li>then there are DataNodes, one per node in the cluster which manages the storage that is attached to that node.</li>
+<li>Internally, file is split into one or more blocks (64MB) and they are stored in DataNodes.</li>
+<li>Read and Write requests from clients are sent to DataNodes</li>
+<li>DataNodes also creates creation, deletion and replication of blocks bases on the instruction from the NameNode</li>
+</ul>
+<p><img src="https://prod-files-secure.s3.us-west-2.amazonaws.com/2f23d75d-8cd2-4d5a-9e68-9e5a290e391d/741156b5-e73e-4ab2-9ad5-95a2ab016f35/Untitled.png" alt="Untitled" /></p>
+<ul>
+<li>Data Replication:
+<ul>
+<li>files are stored as sequence of blocks</li>
+<li>blocks are replicated for tolerance. replication factor can be configured per file</li>
+<li>replication factor can be specified at file creation and can be changed later</li>
+</ul>
+</li>
+<li>Heartbeat: NameNode sends heartbeat signal to DataNodes to check if they are functioning properly. If there’s no response from a DataNode it is considered dead.</li>
+<li>Cluster Rebalancing: supports rebalancing schemes. A scheme might move data from one DataNode to another</li>
+</ul>
+<h3 id="drawbacks">Drawbacks</h3>
+<ul>
+<li>Stored data on disk or hard disks, which makes it slower. Every time when you need to do some calculations, we need to read the data from the disk, do the operation and store it back to disk</li>
+<li>Only supports Batch Processing. You need to wait for one batch to complete before you submit another batch</li>
+</ul>
+
+  </main>
+  <p>
+        Tags:
+          <a href="/tags/distributed-systems/">#distributed systems</a>
+  </p>
+<footer>
+</footer>
+</body>
+</html>

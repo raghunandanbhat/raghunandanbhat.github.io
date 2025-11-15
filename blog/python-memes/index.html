@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Why do JavaScript devs get to have all the fun? | </title>
+    <meta name="title" content="Why do JavaScript devs get to have all the fun?">
+<meta name="description" content="">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono&family=Merriweather+Sans:wght@300&family=Merriweather:wght@300&display=swap" rel="stylesheet">
+    <style>
+        :root {
+    --width: 800px;
+    --font-main: Verdana, Merriweather, Merriweather Sans, sans-serif;
+    --font-secondary: Verdana, Merriweather, Merriweather Sans, sans-serif;
+    --font-scale: 1em;
+    --background-color: #fff;
+    --heading-color: #222;
+    --text-color: #444;
+    --link-color: #3273dc;
+    --visited-color: #8b6fcb;
+    --code-background-color: #f2f2f2;
+    --code-color: #222;
+    --blockquote-color: #222;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --background-color: #01242e;
+        --heading-color: #eee;
+        --text-color: #ddd;
+        --link-color: #8cc2dd;
+        --visited-color: #8b6fcb;
+        --code-background-color: #000;
+        --code-color: #ddd;
+        --blockquote-color: #ccc;
+    }
+}
+
+body {
+    font-family: var(--font-secondary);
+    font-size: var(--font-scale);
+    margin: auto;
+    padding:20px;
+    max-width: var(--width);
+    text-align: left;
+    background-color: var(--background-color);
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    line-height: 1.5;
+    color: var(--text-color);
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-main);
+    color: var(--heading-color);
+}
+
+a {
+    color: var(--link-color); cursor: pointer; text-decoration: none;
+}
+a:hover {
+    text-decoration: underline;
+}
+
+nav a {
+    margin-right: 8px;
+}
+nav span.active {
+    font-weight: bold;
+    margin-right: 10px;
+}
+
+strong, b {
+    color: var(--heading-color);
+}
+
+button {
+    margin: 0;
+    cursor: pointer;
+}
+
+main {
+    line-height: 1.6;
+}
+
+table {
+    width: 100%;
+}
+
+hr {
+    border: 0;
+    border-top: 1px
+    dashed;
+}
+
+img {
+    max-width: 100%;
+}
+
+pre code {
+    background-color: var(--code-background-color);
+    color: var(--code-color);
+    display: block;
+    padding: 20px;
+    white-space: pre-wrap;
+    font-size: 0.875rem;
+    overflow-x: auto;
+}
+
+code {
+    font-family: JetBrains Mono, monospace;
+    padding: 2px;
+    background-color: var(--code-background-color);
+    color: var(--code-color);
+    border-radius: 3px;
+}
+
+blockquote {
+    border-left: 1px solid #999;
+    color: var(--code-color);
+    padding-left: 20px;
+    font-style: italic;
+}
+
+footer {
+    padding: 25px 0;
+    text-align: center;
+}
+
+.title:hover { text-decoration: none; }
+.title h1 { font-size: 1.5em;}
+.inline { width: auto !important; }
+.highlight,
+.code { padding: 1px 15px;
+    background-color: var(--code-background-color);
+    color: var(--code-color);
+    border-radius: 3px;
+    margin-block-start: 1em;
+    margin-block-end: 1em;
+    overflow-x: auto;
+}
+
+/* blog post list */
+ul.blog-posts { list-style-type: none; padding:unset; }
+ul.blog-posts li { display: flex; }
+ul.blog-posts li span { flex: 0 0 130px; }
+ul.blog-posts li a:visited { color: var(--visited-color); }
+.tags {font-size: smaller; }
+
+    </style>
+</head>
+<body>
+  <header>
+  <a href="/" class="title">
+    <h1></h1>
+  </a>
+  <nav aria-label="site">
+      <a href="/">Home</a>
+      <a href="/blog/">Blog</a>
+      <a href="/projects/">Projects</a>
+      <a href="/misc/">misc.</a>
+  </nav>
+</header>
+<h1>Why do JavaScript devs get to have all the fun?</h1>
+      <p>
+        <i>
+          <time datetime="2024-03-21T00:00:00+00:00" pubdate>2024-03-21</time>
+        </i>
+      </p>
+    <details open>
+      <summary>Table of contents</summary>
+    <ul>
+        <li>
+          <a href="/blog/python-memes/#numbers-in-python">Numbers in Python</a>
+        </li>
+        <li>
+          <a href="/blog/python-memes/#lists-in-python">Lists in Python</a>
+        </li>
+        <li>
+          <a href="/blog/python-memes/#dictionary-in-python">Dictionary in Python</a>
+        </li>
+        <li>
+          <a href="/blog/python-memes/#few-more">Few more</a>
+        </li>
+    </ul>
+    </details>
+  <main>
+    <p>I have seen a lot of memes on JavaScript on the Internet. At this point, JS memes are overtaking the NodeJS memes and time has come to change that. Introducing a new entry into this list - Python. Recently, I have been seeing some quirks of Python on X (twitter) and some of them are my own experiences. This post is all about weird behaviors of Python. Let's go!</p>
+<p align="center">
+    <img src="../../imgs/python-meme.png"/>
+</p>
+<h3 id="numbers-in-python"><strong>Numbers in Python</strong></h3>
+<p>You can use an underscore ( <code>_</code> ) instead of a comma ( <code>,</code> ) in python numbers for better readbility. For example, <code>1_000_000</code> is a valid number and it is easy to read. Why is it an issue? Imagine you write a regular expression to match number and you forget to include <code>_</code> in it. Good luck debugging it if you're not aware of this fact.</p>
+<p>Trust me all of these numbers are valid and this is the correct regular expression to match numbers in python. LGTM if I see this in code review!</p>
+<pre data-lang="py" style="background-color:#2b303b;color:#c0c5ce;" class="language-py "><code class="language-py" data-lang="py"><span>numbers = &quot;&quot;&quot;
+</span><span style="color:#a3be8c;">Integers: 1_0_0_0, -2_00, +3_0_000
+</span><span style="color:#a3be8c;">Floats: 1_2.3_4, -0.5_5, +10_0.0_0_1
+</span><span style="color:#a3be8c;">Scientific: 1e10, 2.5E-3, 1_2.3_4e+5_0_0, -1.2E-1_0
+</span><span>&quot;&quot;&quot;
+</span><span>
+</span><span>pattern = </span><span style="color:#b48ead;">r</span><span>&#39;</span><span style="color:#d08770;">[+-]</span><span>?</span><span style="color:#b48ead;">\b</span><span style="color:#d08770;">\d</span><span>+</span><span style="color:#a3be8c;">(_</span><span style="color:#d08770;">\d</span><span>+</span><span style="color:#a3be8c;">)</span><span>*</span><span style="color:#a3be8c;">(</span><span style="color:#96b5b4;">\.</span><span style="color:#d08770;">\d</span><span>+</span><span style="color:#a3be8c;">(_</span><span style="color:#d08770;">\d</span><span>+</span><span style="color:#a3be8c;">)</span><span>*</span><span style="color:#a3be8c;">)</span><span>?</span><span style="color:#a3be8c;">(</span><span style="color:#d08770;">[eE][+-]</span><span>?</span><span style="color:#d08770;">\d</span><span>+</span><span style="color:#a3be8c;">(_</span><span style="color:#d08770;">\d</span><span>+</span><span style="color:#a3be8c;">)</span><span>*</span><span style="color:#a3be8c;">)</span><span>?</span><span style="color:#b48ead;">\b</span><span>&#39;
+</span><span>
+</span><span>matches = re.</span><span style="color:#bf616a;">findall</span><span>(pattern, numbers)
+</span></code></pre>
+<h3 id="lists-in-python"><strong>Lists in Python</strong></h3>
+<p>You can multiply a Python <code>list</code> by an integer, and it's totally valid and intuitive. At least, I thought so until I saw this <a href="https://x.com/francoisfleuret/status/1770528106513600636">post</a> from <a href="https://twitter.com/francoisfleuret">François Fleuret</a></p>
+<img src="../../imgs/list-multiply.png"/>
+<p>The answer to this is simple. Everything in Python is an object, and when the <code>*</code> operator is used with a sequence type object, it repeats that object x number of times. <code>[[]] * 4</code> produces <code>[[], [], [], []]</code>. When <code>*</code> is used on an empty <code>list</code> object, it simply repeats the same object 4 times. Remember, all 4 empty lists are references to the same empty <code>list</code> object. When you append to any one of these empty lists, your modification is reflected in all of its copies.</p>
+<p>There's great in-depth explanation for this <a href="https://blog.codingconfessions.com/p/why-do-python-lists-multiply-oddly">here</a> by <a href="https://twitter.com/abhi9u">Abhinav</a>.</p>
+<h3 id="dictionary-in-python"><strong>Dictionary in Python</strong></h3>
+<p>Yet another Python quirk from twitter, posted <a href="https://x.com/ryxcommar/status/1772105348872011972">here</a>.</p>
+<img src="../../imgs/python-dict-hash.png"/>
+<p>When python is constrcuting the dictionary, it uses <code>hash()</code>, and in case of hash collision, it checks for equivalence. Here, <code>hash(1) == hash(True) == 1</code> and <code>1 == True</code> in Python. So, the key is overwritten.</p>
+<h3 id="few-more"><strong>Few more</strong></h3>
+<ul>
+<li><a href="https://x.com/voooooogel/status/1770888806641827903">Mutable default arguments</a></li>
+<li><a href="https://x.com/demestive/status/1770930025811910772">Defining a lambda in a loop that refers to loop varibale</a></li>
+<li>to be continued...</li>
+</ul>
+
+  </main>
+  <p>
+        Tags:
+          <a href="/tags/python/">#python</a>
+          <a href="/tags/javascript/">#javascript</a>
+  </p>
+<footer>
+</footer>
+</body>
+</html>
