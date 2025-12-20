@@ -111,7 +111,7 @@ Despite the unconventional nature of these optimizations, they proved highly eff
 ### **Failed attempts and Skill Issues**
 During these attempts, I experimented with various other tricks and felt the 'skill issue' meme.
 <p align="center">
-    <img src="../../static/imgs/skill-issue.png"/>
+    <img src="../../imgs/skill-issue.png"/>
 </p>
 
 ### Multi-threading in Python
