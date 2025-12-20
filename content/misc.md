@@ -5,6 +5,10 @@ extra.hide_table_of_contents = true
 +++
 ### Long list of blogs/article/videos/bookmarks/whatever I find interesting-
 [I haven't read all of this]
+* Dec 2025
+  * [Performance Guide by Jeff Dean & Sanjay Ghemawat](https://abseil.io/fast/)
+  * [My favourite small hash table](https://www.corsix.org/content/my-favourite-small-hash-table)
+---
 * Nov 2025
   * [Think in Math. Write in Code](https://www.jmeiners.com/think-in-math/) by Justin Meiners.
 ---
