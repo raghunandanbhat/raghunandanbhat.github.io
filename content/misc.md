@@ -5,7 +5,11 @@ extra.hide_table_of_contents = true
 +++
 ### Long list of blogs/article/videos/bookmarks/whatever I find interesting-
 [I haven't read all of this]
+* Jan 2026
+  * [Concurrent Hash Table Designs](https://bluuewhale.github.io/posts/concurrent-hashmap-designs/)
+  * Compiler Engineering In Practice [Part-1](https://chisophugis.github.io/2025/12/08/compiler-engineering-in-practice-part-1-what-is-a-compiler.html), [Part-2](https://chisophugis.github.io/2026/01/04/compiler-engineering-in-practice-part-2-why-is-a-compiler.html)
 * Dec 2025
+  * [The Prison of Financial Mediocrity](https://x.com/systematicls/status/2004900241745883205)
   * [Performance Guide by Jeff Dean & Sanjay Ghemawat](https://abseil.io/fast/)
   * [My favourite small hash table](https://www.corsix.org/content/my-favourite-small-hash-table)
 ---
