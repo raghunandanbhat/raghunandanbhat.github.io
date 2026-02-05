@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>misc | </title>
+    <meta name="title" content="misc">
+<meta name="description" content="">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono&family=Merriweather+Sans:wght@300&family=Merriweather:wght@300&display=swap" rel="stylesheet">
+    <style>
+        :root {
+    --width: 800px;
+    --font-main: Verdana, Merriweather, Merriweather Sans, sans-serif;
+    --font-secondary: Verdana, Merriweather, Merriweather Sans, sans-serif;
+    --font-scale: 1em;
+    --background-color: #fff;
+    --heading-color: #222;
+    --text-color: #444;
+    --link-color: #3273dc;
+    --visited-color: #8b6fcb;
+    --code-background-color: #f2f2f2;
+    --code-color: #222;
+    --blockquote-color: #222;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --background-color: #01242e;
+        --heading-color: #eee;
+        --text-color: #ddd;
+        --link-color: #8cc2dd;
+        --visited-color: #8b6fcb;
+        --code-background-color: #000;
+        --code-color: #ddd;
+        --blockquote-color: #ccc;
+    }
+}
+
+body {
+    font-family: var(--font-secondary);
+    font-size: var(--font-scale);
+    margin: auto;
+    padding:20px;
+    max-width: var(--width);
+    text-align: left;
+    background-color: var(--background-color);
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    line-height: 1.5;
+    color: var(--text-color);
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-main);
+    color: var(--heading-color);
+}
+
+a {
+    color: var(--link-color); cursor: pointer; text-decoration: none;
+}
+a:hover {
+    text-decoration: underline;
+}
+
+nav a {
+    margin-right: 8px;
+}
+nav span.active {
+    font-weight: bold;
+    margin-right: 10px;
+}
+
+strong, b {
+    color: var(--heading-color);
+}
+
+button {
+    margin: 0;
+    cursor: pointer;
+}
+
+main {
+    line-height: 1.6;
+}
+
+table {
+    width: 100%;
+}
+
+hr {
+    border: 0;
+    border-top: 1px
+    dashed;
+}
+
+img {
+    max-width: 100%;
+}
+
+pre code {
+    background-color: var(--code-background-color);
+    color: var(--code-color);
+    display: block;
+    padding: 20px;
+    white-space: pre-wrap;
+    font-size: 0.875rem;
+    overflow-x: auto;
+}
+
+code {
+    font-family: JetBrains Mono, monospace;
+    padding: 2px;
+    background-color: var(--code-background-color);
+    color: var(--code-color);
+    border-radius: 3px;
+}
+
+blockquote {
+    border-left: 1px solid #999;
+    color: var(--code-color);
+    padding-left: 20px;
+    font-style: italic;
+}
+
+footer {
+    padding: 25px 0;
+    text-align: center;
+}
+
+.title:hover { text-decoration: none; }
+.title h1 { font-size: 1.5em;}
+.inline { width: auto !important; }
+.highlight,
+.code { padding: 1px 15px;
+    background-color: var(--code-background-color);
+    color: var(--code-color);
+    border-radius: 3px;
+    margin-block-start: 1em;
+    margin-block-end: 1em;
+    overflow-x: auto;
+}
+
+/* blog post list */
+ul.blog-posts { list-style-type: none; padding:unset; }
+ul.blog-posts li { display: flex; }
+ul.blog-posts li span { flex: 0 0 130px; }
+ul.blog-posts li a:visited { color: var(--visited-color); }
+.tags {font-size: smaller; }
+
+    </style>
+</head>
+<body>
+  <header>
+  <a href="/" class="title">
+    <h1></h1>
+  </a>
+  <nav aria-label="site">
+      <a href="/">Home</a>
+      <a href="/blog/">Blog</a>
+      <a href="/projects/">Projects</a>
+      <a href="/misc/">misc.</a>
+  </nav>
+</header>
+<h1>misc</h1>
+  <main>
+    <h3 id="long-list-of-blogs-article-videos-bookmarks-whatever-i-find-interesting">Long list of blogs/article/videos/bookmarks/whatever I find interesting-</h3>
+<p>[I haven't read all of this]</p>
+<ul>
+<li>Feb 2026
+<ul>
+<li>glibc <a href="https://sourceware.org/glibc/wiki/MallocInternals">malloc internals</a>, <a href="https://gist.github.com/attractivechaos/862fb6e58147b47c9d16bf2d9e12445f">arenas &amp; malloc</a>.</li>
+<li>Wish I knew this existed - <a href="https://github.com/zpoint/CPython-Internals">CPython internals</a></li>
+</ul>
+</li>
+</ul>
+<hr />
+<ul>
+<li>Jan 2026
+<ul>
+<li>Larger-than-memory range index by MSR - <a href="https://github.com/microsoft/bf-tree">bf-tree</a>.</li>
+<li><a href="https://huyenchip.com/2021/09/07/a-friendly-introduction-to-machine-learning-compilers-and-optimizers.html">A friendly introduction to machine learning compilers and optimizers</a> by Chip Huyen.</li>
+<li><a href="https://bluuewhale.github.io/posts/concurrent-hashmap-designs/">Concurrent Hash Table Designs</a></li>
+<li>Compiler Engineering In Practice <a href="https://chisophugis.github.io/2025/12/08/compiler-engineering-in-practice-part-1-what-is-a-compiler.html">Part-1</a>, <a href="https://chisophugis.github.io/2026/01/04/compiler-engineering-in-practice-part-2-why-is-a-compiler.html">Part-2</a></li>
+</ul>
+</li>
+</ul>
+<hr />
+<ul>
+<li>Dec 2025
+<ul>
+<li><a href="https://x.com/systematicls/status/2004900241745883205">The Prison of Financial Mediocrity</a></li>
+<li><a href="https://abseil.io/fast/">Performance Guide by Jeff Dean &amp; Sanjay Ghemawat</a></li>
+<li><a href="https://www.corsix.org/content/my-favourite-small-hash-table">My favourite small hash table</a></li>
+</ul>
+</li>
+</ul>
+<hr />
+<ul>
+<li>Nov 2025
+<ul>
+<li><a href="https://www.jmeiners.com/think-in-math/">Think in Math. Write in Code</a> by Justin Meiners.</li>
+</ul>
+</li>
+</ul>
+<hr />
+<ul>
+<li>Oct 2025
+<ul>
+<li><a href="https://multigres.com/blog/generalized-consensus">Generalized Consensus</a> - series of blogs by <a href="https://x.com/ssougou">Sugu</a> at Multigress.</li>
+</ul>
+</li>
+</ul>
+<hr />
+<ul>
+<li>Sep 2025
+<ul>
+<li><a href="https://lwn.net/Articles/262464/">What's RCU - Part 1</a></li>
+<li><a href="https://lwn.net/Articles/263130/">What's RCU - Part 2</a></li>
+</ul>
+</li>
+</ul>
+<hr />
+<ul>
+<li>Aug 2025
+<ul>
+<li><a href="https://www.rfleury.com/p/untangling-lifetimes-the-arena-allocator">Untangling lifetimes by Ryan Fleury</a></li>
+<li><a href="https://gustedt.wordpress.com/">Jens Gustedt's Blog</a></li>
+<li><a href="https://floooh.github.io/">Brain Dump</a> by Andre Weissflog</li>
+</ul>
+</li>
+</ul>
+<hr />
+<ul>
+<li>May 2025
+<ul>
+<li><a href="https://pierrezemb.fr/posts/learn-about-dst/">Pierre Zemb's Blog</a></li>
+</ul>
+</li>
+</ul>
+<hr />
+<ul>
+<li>Apr 2025
+<ul>
+<li><a href="https://research.swtch.com/hwmm">Hardware Memory Models</a></li>
+<li><a href="https://maheshba.bitbucket.io/blog/2025/04/29/cars.html">Jeeps, Ferraris and Other Engineers</a></li>
+</ul>
+</li>
+</ul>
+<hr />
+<ul>
+<li>Mar 205
+<ul>
+<li><a href="https://planetscale.com/blog/btrees-and-database-indexes">BTrees &amp; DB Indexes by Planetscale</a></li>
+<li><a href="https://research.swtch.com/hwmm">How Query Engines Work</a>
+--</li>
+</ul>
+</li>
+<li>Feb 2025
+<ul>
+<li><a href="https://sebastianraschka.com/blog/2025/understanding-reasoning-llms.html">Understanding Reasoning LLMs by Sebastian Raschka</a></li>
+<li><a href="https://www.youtube.com/watch?v=IaB8jvjW0kk">Deterministic Simulation Testing by Ben Collins</a></li>
+<li><a href="https://wyounas.github.io/concurrency/2024/12/12/how-concurrency-works-a-visual-guide/">How concurrency works: A visual guide</a></li>
+</ul>
+</li>
+</ul>
+<hr />
+<ul>
+<li>Jan 2025
+<ul>
+<li><a href="https://www.youtube.com/watch?v=5fXCKlZAHGA">Push based execution in DuckDB by Mark Raasveldt</a></li>
+<li><a href="https://igoro.com/archive/gallery-of-processor-cache-effects/">Gallery of Processor Cache Effects by Igor Ostrovsky</a></li>
+<li><a href="https://bitbashing.io/gc-for-systems-programmers.html#">Garbage Collection for Systems Programmers</a></li>
+</ul>
+</li>
+</ul>
+<hr />
+<ul>
+<li>Dec 2024
+<ul>
+<li><a href="https://www.naklecha.com/">AI/ML/RL blogs</a> by <a href="https://x.com/naklecha">@naklecha</a></li>
+<li><a href="https://cglab.ca/~abeinges/blah/too-many-lists/book/README.html">Learning Rust With Entirely Too Many Linked Lists</a></li>
+<li><a href="https://www.youtube.com/@DeveloperVoices">Developer Voices</a></li>
+</ul>
+</li>
+</ul>
+<hr />
+<ul>
+<li>Nov 2024
+<ul>
+<li><a href="https://transactional.blog/">Alex Miller's blog</a></li>
+<li><a href="https://transactional.blog/how-to-learn/disk-io">Alex Miller's Userland Disk I/O</a></li>
+</ul>
+</li>
+</ul>
+<hr />
+<ul>
+<li>Oct 2024
+<ul>
+<li><a href="https://www.inkandswitch.com/">Ink&amp;Switch</a></li>
+<li><a href="https://ludwigabap.bearblog.dev/">God's chosen principal engineer- ludwig's blog</a></li>
+</ul>
+</li>
+</ul>
+<hr />
+<ul>
+<li>Sep 2024
+<ul>
+<li><a href="https://jepsen.io/consistency">Jepsen Consistency model</a></li>
+<li><a href="https://dancres.github.io/Pages/">Distributed Systems Reading List</a></li>
+<li><a href="https://matklad.github.io/">matklad aka Alex Kladov of TigerBeetle</a></li>
+</ul>
+</li>
+</ul>
+<hr />
+<ul>
+<li>Aug 2024
+<ul>
+<li><a href="https://engineering.linkedin.com/distributed-systems/log-what-every-software-engineer-should-know-about-real-time-datas-unifying">What every software engineer should know about logs from LinkedIn Engineering</a> - read to know how the Kafka project was started at LinkedIn.</li>
+</ul>
+</li>
+</ul>
+<hr />
+<ul>
+<li>Jun 2024
+<ul>
+<li><a href="https://www.youtube.com/watch?v=IroPQ150F6c">Data oriented Design by Andrew Kelly</a> - video.</li>
+</ul>
+</li>
+</ul>
+<hr />
+<ul>
+<li>May 2024
+<ul>
+<li><a href="https://registerspill.thorstenball.com/">Register Spill  by Thorsten Ball</a></li>
+</ul>
+</li>
+</ul>
+<hr />
+<ul>
+<li>Jan 2024
+<ul>
+<li><a href="https://muratbuffalo.blogspot.com/">Murat Demirbas' blog</a> - go to blog for Distributed Systems.</li>
+</ul>
+</li>
+</ul>
+<hr />
+<ul>
+<li>Dec 2023
+<ul>
+<li><a href="https://rmoff.net/">Robin Moffat's blog</a> - Go to blog for Apache Kafka &amp; data engineering.</li>
+</ul>
+</li>
+</ul>
+<hr />
+<ul>
+<li>Nov 2023
+<ul>
+<li><a href="https://briankung.dev/2024/01/26/implementing-the-raft-consensus-algorithm-with-david-beazley/">Raft Implementation: Brian Kung x David Beazley</a></li>
+<li><a href="https://dabeaz.com/index.html">David Beazley's blog</a> - advanced python, writing a compiler, and more.</li>
+</ul>
+</li>
+</ul>
+<hr />
+<ul>
+<li>Oct 2023
+<ul>
+<li><a href="https://eatonphil.com/">Phil Eaton's blog</a> - the database guy.</li>
+</ul>
+</li>
+</ul>
+
+  </main>
+  <p>
+  </p>
+<footer>
+</footer>
+</body>
+</html>

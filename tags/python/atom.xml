@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
+    <title> - python</title>
+    <link href="/tags/python/atom.xml" rel="self" type="application/atom+xml"/>
+    <link href="/"/>
+    <generator uri="https://www.getzola.org/">Zola</generator>
+    <updated>2024-03-21T00:00:00+00:00</updated>
+    <id>/tags/python/atom.xml</id>
+    <entry xml:lang="en">
+        <title>Why do JavaScript devs get to have all the fun?</title>
+        <published>2024-03-21T00:00:00+00:00</published>
+        <updated>2024-03-21T00:00:00+00:00</updated>
+        <author>
+          <name>Unknown</name>
+        </author>
+        <link rel="alternate" href="/blog/python-memes/" type="text/html"/>
+        <id>/blog/python-memes/</id>
+        
+        <content type="html">&lt;p&gt;I have seen a lot of memes on JavaScript on the Internet. At this point, JS memes are overtaking the NodeJS memes and time has come to change that. Introducing a new entry into this list - Python. Recently, I have been seeing some quirks of Python on X (twitter) and some of them are my own experiences. This post is all about weird behaviors of Python. Let&#x27;s go!&lt;&#x2F;p&gt;
+&lt;p align=&quot;center&quot;&gt;
+    &lt;img src=&quot;..&#x2F;..&#x2F;imgs&#x2F;python-meme.png&quot;&#x2F;&gt;
+&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;numbers-in-python&quot;&gt;&lt;strong&gt;Numbers in Python&lt;&#x2F;strong&gt;&lt;&#x2F;h3&gt;
+&lt;p&gt;You can use an underscore ( &lt;code&gt;_&lt;&#x2F;code&gt; ) instead of a comma ( &lt;code&gt;,&lt;&#x2F;code&gt; ) in python numbers for better readbility. For example, &lt;code&gt;1_000_000&lt;&#x2F;code&gt; is a valid number and it is easy to read. Why is it an issue? Imagine you write a regular expression to match number and you forget to include &lt;code&gt;_&lt;&#x2F;code&gt; in it. Good luck debugging it if you&#x27;re not aware of this fact.&lt;&#x2F;p&gt;
+&lt;p&gt;Trust me all of these numbers are valid and this is the correct regular expression to match numbers in python. LGTM if I see this in code review!&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;py&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-py &quot;&gt;&lt;code class=&quot;language-py&quot; data-lang=&quot;py&quot;&gt;&lt;span&gt;numbers = &amp;quot;&amp;quot;&amp;quot;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;Integers: 1_0_0_0, -2_00, +3_0_000
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;Floats: 1_2.3_4, -0.5_5, +10_0.0_0_1
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;Scientific: 1e10, 2.5E-3, 1_2.3_4e+5_0_0, -1.2E-1_0
+&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;&amp;quot;&amp;quot;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;pattern = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;r&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;[+-]&lt;&#x2F;span&gt;&lt;span&gt;?&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;\b&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;\d&lt;&#x2F;span&gt;&lt;span&gt;+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;(_&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;\d&lt;&#x2F;span&gt;&lt;span&gt;+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;)&lt;&#x2F;span&gt;&lt;span&gt;*&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;\.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;\d&lt;&#x2F;span&gt;&lt;span&gt;+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;(_&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;\d&lt;&#x2F;span&gt;&lt;span&gt;+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;)&lt;&#x2F;span&gt;&lt;span&gt;*&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;)&lt;&#x2F;span&gt;&lt;span&gt;?&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;[eE][+-]&lt;&#x2F;span&gt;&lt;span&gt;?&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;\d&lt;&#x2F;span&gt;&lt;span&gt;+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;(_&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;\d&lt;&#x2F;span&gt;&lt;span&gt;+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;)&lt;&#x2F;span&gt;&lt;span&gt;*&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;)&lt;&#x2F;span&gt;&lt;span&gt;?&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;\b&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;matches = re.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;findall&lt;&#x2F;span&gt;&lt;span&gt;(pattern, numbers)
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;h3 id=&quot;lists-in-python&quot;&gt;&lt;strong&gt;Lists in Python&lt;&#x2F;strong&gt;&lt;&#x2F;h3&gt;
+&lt;p&gt;You can multiply a Python &lt;code&gt;list&lt;&#x2F;code&gt; by an integer, and it&#x27;s totally valid and intuitive. At least, I thought so until I saw this &lt;a href=&quot;https:&#x2F;&#x2F;x.com&#x2F;francoisfleuret&#x2F;status&#x2F;1770528106513600636&quot;&gt;post&lt;&#x2F;a&gt; from &lt;a href=&quot;https:&#x2F;&#x2F;twitter.com&#x2F;francoisfleuret&quot;&gt;François Fleuret&lt;&#x2F;a&gt;&lt;&#x2F;p&gt;
+&lt;img src=&quot;..&#x2F;..&#x2F;imgs&#x2F;list-multiply.png&quot;&#x2F;&gt;
+&lt;p&gt;The answer to this is simple. Everything in Python is an object, and when the &lt;code&gt;*&lt;&#x2F;code&gt; operator is used with a sequence type object, it repeats that object x number of times. &lt;code&gt;[[]] * 4&lt;&#x2F;code&gt; produces &lt;code&gt;[[], [], [], []]&lt;&#x2F;code&gt;. When &lt;code&gt;*&lt;&#x2F;code&gt; is used on an empty &lt;code&gt;list&lt;&#x2F;code&gt; object, it simply repeats the same object 4 times. Remember, all 4 empty lists are references to the same empty &lt;code&gt;list&lt;&#x2F;code&gt; object. When you append to any one of these empty lists, your modification is reflected in all of its copies.&lt;&#x2F;p&gt;
+&lt;p&gt;There&#x27;s great in-depth explanation for this &lt;a href=&quot;https:&#x2F;&#x2F;blog.codingconfessions.com&#x2F;p&#x2F;why-do-python-lists-multiply-oddly&quot;&gt;here&lt;&#x2F;a&gt; by &lt;a href=&quot;https:&#x2F;&#x2F;twitter.com&#x2F;abhi9u&quot;&gt;Abhinav&lt;&#x2F;a&gt;.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;dictionary-in-python&quot;&gt;&lt;strong&gt;Dictionary in Python&lt;&#x2F;strong&gt;&lt;&#x2F;h3&gt;
+&lt;p&gt;Yet another Python quirk from twitter, posted &lt;a href=&quot;https:&#x2F;&#x2F;x.com&#x2F;ryxcommar&#x2F;status&#x2F;1772105348872011972&quot;&gt;here&lt;&#x2F;a&gt;.&lt;&#x2F;p&gt;
+&lt;img src=&quot;..&#x2F;..&#x2F;imgs&#x2F;python-dict-hash.png&quot;&#x2F;&gt;
+&lt;p&gt;When python is constrcuting the dictionary, it uses &lt;code&gt;hash()&lt;&#x2F;code&gt;, and in case of hash collision, it checks for equivalence. Here, &lt;code&gt;hash(1) == hash(True) == 1&lt;&#x2F;code&gt; and &lt;code&gt;1 == True&lt;&#x2F;code&gt; in Python. So, the key is overwritten.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;few-more&quot;&gt;&lt;strong&gt;Few more&lt;&#x2F;strong&gt;&lt;&#x2F;h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;x.com&#x2F;voooooogel&#x2F;status&#x2F;1770888806641827903&quot;&gt;Mutable default arguments&lt;&#x2F;a&gt;&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;a href=&quot;https:&#x2F;&#x2F;x.com&#x2F;demestive&#x2F;status&#x2F;1770930025811910772&quot;&gt;Defining a lambda in a loop that refers to loop varibale&lt;&#x2F;a&gt;&lt;&#x2F;li&gt;
+&lt;li&gt;to be continued...&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+</content>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>1 Billion Row Challenge in Python</title>
+        <published>2024-01-23T00:00:00+00:00</published>
+        <updated>2024-01-23T00:00:00+00:00</updated>
+        <author>
+          <name>Unknown</name>
+        </author>
+        <link rel="alternate" href="/blog/1brc/" type="text/html"/>
+        <id>/blog/1brc/</id>
+        
+        <content type="html">&lt;p&gt;On January 1st of this year, &lt;a href=&quot;https:&#x2F;&#x2F;twitter.com&#x2F;gunnarmorling&quot;&gt;Gunnar Morling&lt;&#x2F;a&gt; launched a new challenge known as the &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;gunnarmorling&#x2F;1brc&quot;&gt;1 Billion Row Challenge&lt;&#x2F;a&gt;. The objective? To read and aggregate 1 billion rows from a text file as quickly as possible. While the challenge officially requires submissions in Java to be eligible for winning, Gunnar allowed participants to showcase solutions in other languages in the &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;gunnarmorling&#x2F;1brc&#x2F;discussions&#x2F;62&quot;&gt;Show &amp;amp; Tell&lt;&#x2F;a&gt; section. In this post, I&#x27;ll detail my attempt at tackling this challenge using my language of choice: Python, and without relying on any external Python packages.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;the-problem&quot;&gt;&lt;strong&gt;The Problem&lt;&#x2F;strong&gt;&lt;&#x2F;h3&gt;
+&lt;p&gt;You have a text file named &lt;code&gt;measurements.txt&lt;&#x2F;code&gt; containing 1 billion rows. Each row consists of two values: a weather station name (city) and the recorded temperature for that city, separated by a semi-colon.&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#2b303b;color:#c0c5ce;&quot;&gt;&lt;code&gt;&lt;span&gt;Hamburg;12.0
+&lt;&#x2F;span&gt;&lt;span&gt;Bulawayo;8.9
+&lt;&#x2F;span&gt;&lt;span&gt;Palembang;38.8
+&lt;&#x2F;span&gt;&lt;span&gt;.....
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;You are supposed to read this file and print out &lt;code&gt;min&lt;&#x2F;code&gt;, &lt;code&gt;mean&lt;&#x2F;code&gt; and &lt;code&gt;max&lt;&#x2F;code&gt; temperature for each city in the following format.&lt;&#x2F;p&gt;
+&lt;pre style=&quot;background-color:#2b303b;color:#c0c5ce;&quot;&gt;&lt;code&gt;&lt;span&gt;{Abha=-23.0&#x2F;18.0&#x2F;59.2, Abidjan=-16.2&#x2F;26.0&#x2F;67.3, Abéché=-10.0&#x2F;29.4&#x2F;69.0, Accra=-10.1&#x2F;26.4&#x2F;66.4, ...}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;h3 id=&quot;attempt-1-the-python-way-of-doing-things&quot;&gt;&lt;strong&gt;Attempt 1: The Python Way of Doing Things&lt;&#x2F;strong&gt;&lt;&#x2F;h3&gt;
+&lt;p&gt;We will use a straightforward method to read from the file and aggregate the values in a Python dictionary. For each city we encounter in the file, we will record the minimum and maximum temperature, as well as the sum and frequency of occurrences of that city in the file (which we need for calculating the mean).&lt;&#x2F;p&gt;
+&lt;p&gt;We will read the text file line by line using Python&#x27;s &lt;code&gt;readline()&lt;&#x2F;code&gt; method. This method operates like a generator and is lazy, meaning it reads only what is needed at the moment. Therefore, we do not need to load the entire 1 billion rows into memory, resulting in faster processing and reduced memory consumption.&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;py&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-py &quot;&gt;&lt;code class=&quot;language-py&quot; data-lang=&quot;py&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;with &lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;open&lt;&#x2F;span&gt;&lt;span&gt;(&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;measurements.txt&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;) &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;as &lt;&#x2F;span&gt;&lt;span&gt;f:
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;for &lt;&#x2F;span&gt;&lt;span&gt;line &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;in &lt;&#x2F;span&gt;&lt;span&gt;f:
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# process each line
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;This method is very readable and works best when reading fairly large files. However, in this case, we need something different and better. With this approach, I was able to read and solve the problem in approximately &lt;strong&gt;870 seconds&lt;&#x2F;strong&gt;. However, compared to Java solutions written at that time, which could solve it in &lt;strong&gt;5 seconds&lt;&#x2F;strong&gt;, this performance is a joke.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;attempt-2-use-multicores-when-you-can&quot;&gt;&lt;strong&gt;Attempt 2: Use multicores when you can&lt;&#x2F;strong&gt;&lt;&#x2F;h3&gt;
+&lt;p&gt;The next obvious step is to use all the cores you have got to run the same process with chunks of data. Python supports multi processing and provides nice interface through &lt;code&gt;concurrent.futures&lt;&#x2F;code&gt; module.&lt;&#x2F;p&gt;
+&lt;p&gt;Spawn multiple processes and make each of these processes to read 100 million lines from the file. Process-1 reads first 100 million lines, Process-2 reading next 100 million lines and so on. One nice aspect of this problem is we are just reading the file and not writing to it. That&#x27;s one huge relief.&lt;&#x2F;p&gt;
+&lt;p&gt;Managing the results from these processes is crucial. Fortunately, Python offers straightforward methods within &lt;code&gt;concurrent.futures&lt;&#x2F;code&gt; to gather results from multiple processes. We can then combine these results to construct a single Python dictionary.&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;py&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-py &quot;&gt;&lt;code class=&quot;language-py&quot; data-lang=&quot;py&quot;&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;MAX_LINES &lt;&#x2F;span&gt;&lt;span&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;1_000_000_000
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;MAX_LINES_PER_CHUNK &lt;&#x2F;span&gt;&lt;span&gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;100_000_000
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;def &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;process_chunk&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;start&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;end&lt;&#x2F;span&gt;&lt;span&gt;):
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# read 100 million lines and process here
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# return the dictionary of {city : {min: , max: , sum: , count: ,}}
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;with &lt;&#x2F;span&gt;&lt;span&gt;concurrent.futures.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;ProcessPoolExecutor&lt;&#x2F;span&gt;&lt;span&gt;() &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;as &lt;&#x2F;span&gt;&lt;span&gt;executor:
+&lt;&#x2F;span&gt;&lt;span&gt;    chunk_results = [executor.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;submit&lt;&#x2F;span&gt;&lt;span&gt;(process_chunk, start, (start + &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;MAX_LINES_PER_CHUNK&lt;&#x2F;span&gt;&lt;span&gt;)) &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;for &lt;&#x2F;span&gt;&lt;span&gt;start &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;in &lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;range&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;MAX_LINES&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;MAX_LINES_PER_CHUNK&lt;&#x2F;span&gt;&lt;span&gt;)]
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;for &lt;&#x2F;span&gt;&lt;span&gt;future &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;in &lt;&#x2F;span&gt;&lt;span&gt;concurrent.futures.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;as_completed&lt;&#x2F;span&gt;&lt;span&gt;(chunk_results):
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# combine the result into one big python dictionary
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;With multi processing, the run time came down to &lt;strong&gt;~320 seconds&lt;&#x2F;strong&gt;. That&#x27;s a nice improvement.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;attempt-3-it-s-all-bytes-in-the-end&quot;&gt;&lt;strong&gt;Attempt 3: It&#x27;s all bytes in the end&lt;&#x2F;strong&gt;&lt;&#x2F;h3&gt;
+&lt;p&gt;In the last attempt, the idea of processing the files as chunks was correct. However, the approach we used was flawed. When reading line by line, there&#x27;s no direct method in Python to jump to a specific line number. For instance, if you want to start reading from the 101st line, you must first loop through the preceding 100 lines, wasting CPU cycles.&lt;&#x2F;p&gt;
+&lt;p&gt;To solve this issue, we need to adopt a different perspective. Instead of treating the file as a sequence of lines, we can view it as a stream of bytes. This shift in perspective allows us to utilize the &lt;code&gt;seek&lt;&#x2F;code&gt; function to skip to the exact byte position in the file. With this capability, the challenge becomes determining these positions efficiently.&lt;&#x2F;p&gt;
+&lt;p&gt;We begin by dividing the total file size by the maximum number of CPU cores available to determine the size of each chunk. Each process should receive nearly equal amounts of data to process. However, there&#x27;s a potential problem: we can&#x27;t guarantee that a line ends at the exact &lt;code&gt;size_per_core&lt;&#x2F;code&gt; byte position. This means that we might end up in the middle of a line, reading an incomplete line.&lt;&#x2F;p&gt;
+&lt;p&gt;To address this issue, we advance the position until we encounter a newline (&lt;code&gt;\n&lt;&#x2F;code&gt;) character, which signifies the end of a line. We consider this position as the end of the chunk and repeat this process for the rest of the file.&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;py&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-py &quot;&gt;&lt;code class=&quot;language-py&quot; data-lang=&quot;py&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;def &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;get_chunk_boundaries&lt;&#x2F;span&gt;&lt;span&gt;():
+&lt;&#x2F;span&gt;&lt;span&gt;    f_size = os.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;stat&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;INPUT_FILE_PATH&lt;&#x2F;span&gt;&lt;span&gt;).st_size
+&lt;&#x2F;span&gt;&lt;span&gt;    size_per_core = f_size &#x2F;&#x2F; os.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;cpu_count&lt;&#x2F;span&gt;&lt;span&gt;()
+&lt;&#x2F;span&gt;&lt;span&gt;    boundaries = []
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;with &lt;&#x2F;span&gt;&lt;span&gt;io.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;open&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;INPUT_FILE_PATH&lt;&#x2F;span&gt;&lt;span&gt;, &amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;rb&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;) &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;as &lt;&#x2F;span&gt;&lt;span&gt;f:
+&lt;&#x2F;span&gt;&lt;span&gt;        start_pos = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0
+&lt;&#x2F;span&gt;&lt;span&gt;        end_pos = start_pos + size_per_core
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;while &lt;&#x2F;span&gt;&lt;span&gt;end_pos &amp;lt; f_size:
+&lt;&#x2F;span&gt;&lt;span&gt;            &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span&gt;(start_pos + size_per_core) &amp;lt; f_size:
+&lt;&#x2F;span&gt;&lt;span&gt;                f.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;seek&lt;&#x2F;span&gt;&lt;span&gt;(size_per_core, os.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;SEEK_CUR&lt;&#x2F;span&gt;&lt;span&gt;)
+&lt;&#x2F;span&gt;&lt;span&gt;                byte_char = f.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;read&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;1&lt;&#x2F;span&gt;&lt;span&gt;)
+&lt;&#x2F;span&gt;&lt;span&gt;                &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;while &lt;&#x2F;span&gt;&lt;span&gt;byte_char != &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;b&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;&amp;#39; and byte_char != &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;b&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;\n&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;:
+&lt;&#x2F;span&gt;&lt;span&gt;                    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# print(f&amp;quot;char at {f.tell()}: {byte_char}&amp;quot;)
+&lt;&#x2F;span&gt;&lt;span&gt;                    byte_char = f.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;read&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;1&lt;&#x2F;span&gt;&lt;span&gt;)
+&lt;&#x2F;span&gt;&lt;span&gt;                end_pos = f.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;tell&lt;&#x2F;span&gt;&lt;span&gt;()
+&lt;&#x2F;span&gt;&lt;span&gt;            &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;else&lt;&#x2F;span&gt;&lt;span&gt;:
+&lt;&#x2F;span&gt;&lt;span&gt;                end_pos = f_size
+&lt;&#x2F;span&gt;&lt;span&gt;            boundaries.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;append&lt;&#x2F;span&gt;&lt;span&gt;((start_pos, end_pos))
+&lt;&#x2F;span&gt;&lt;span&gt;            &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# print(f&amp;quot;start: {start_pos}, end: {end_pos}, size-diff: {end_pos-start_pos}&amp;quot;)
+&lt;&#x2F;span&gt;&lt;span&gt;            start_pos = end_pos
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span&gt;boundaries
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;pre data-lang=&quot;py&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-py &quot;&gt;&lt;code class=&quot;language-py&quot; data-lang=&quot;py&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;def &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;process_chunk&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;start&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;end&lt;&#x2F;span&gt;&lt;span&gt;):
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# process the chunk here
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;chunk_boundaries = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;get_chunk_boundaries&lt;&#x2F;span&gt;&lt;span&gt;()
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;with &lt;&#x2F;span&gt;&lt;span&gt;concurrent.futures.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;ProcessPoolExecutor&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;max_workers&lt;&#x2F;span&gt;&lt;span&gt;=os.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;cpu_count&lt;&#x2F;span&gt;&lt;span&gt;()) &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;as &lt;&#x2F;span&gt;&lt;span&gt;executor:
+&lt;&#x2F;span&gt;&lt;span&gt;    chunk_result_futures = [executor.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;submit&lt;&#x2F;span&gt;&lt;span&gt;(process_chunk, start, end) &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;for &lt;&#x2F;span&gt;&lt;span&gt;start, end &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;in &lt;&#x2F;span&gt;&lt;span&gt;chunk_boundaries]
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;for &lt;&#x2F;span&gt;&lt;span&gt;future &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;in &lt;&#x2F;span&gt;&lt;span&gt;concurrent.futures.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;as_completed&lt;&#x2F;span&gt;&lt;span&gt;(chunk_results):
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# combine the result into one big python dictionary
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;After establishing the boundaries of the file chunks, we process chunks with multiprocessing and aggregate the results. The task was completed in &lt;strong&gt;162 seconds&lt;&#x2F;strong&gt;.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;attempt-4-last-few-drops-of-performance&quot;&gt;&lt;strong&gt;Attempt 4: Last few drops of performance&lt;&#x2F;strong&gt;&lt;&#x2F;h3&gt;
+&lt;p&gt;After exhausting the obvious methods to enhance performance, we delved into less conventional approaches. This is where things got a bit crazy - memory mapping, minimizing function calls, reducing exceptions, and branchless programming.&lt;&#x2F;p&gt;
+&lt;ol&gt;
+&lt;li&gt;Memory map each chunk to a range of addresses within the address space of each process.&lt;&#x2F;li&gt;
+&lt;li&gt;Instead of using built-in &lt;code&gt;min&lt;&#x2F;code&gt; and &lt;code&gt;max&lt;&#x2F;code&gt; functions, I opted for simple &lt;code&gt;if&lt;&#x2F;code&gt; statements.&lt;&#x2F;li&gt;
+&lt;li&gt;Replaced the nested dictionaries used to store results with dictionaries of &lt;code&gt;lists&lt;&#x2F;code&gt;.&lt;&#x2F;li&gt;
+&lt;&#x2F;ol&gt;
+&lt;p&gt;Despite the unconventional nature of these optimizations, they proved highly effective. The task was completed in 72 seconds. Increasing the number of processes to 16 reduced time to just &lt;strong&gt;64 seconds&lt;&#x2F;strong&gt;.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;failed-attempts-and-skill-issues&quot;&gt;&lt;strong&gt;Failed attempts and Skill Issues&lt;&#x2F;strong&gt;&lt;&#x2F;h3&gt;
+&lt;p&gt;During these attempts, I experimented with various other tricks and felt the &#x27;skill issue&#x27; meme.&lt;&#x2F;p&gt;
+&lt;p align=&quot;center&quot;&gt;
+    &lt;img src=&quot;..&#x2F;..&#x2F;imgs&#x2F;skill-issue.png&quot;&#x2F;&gt;
+&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;multi-threading-in-python&quot;&gt;Multi-threading in Python&lt;&#x2F;h3&gt;
+&lt;p&gt;This realm of programming is fraught with risks, particularly if you&#x27;re not keen on debugging concurrency issues. Also, Python is not multi-threaded by default; rather, you have to make it multi-threaded by disabling the infamous &lt;strong&gt;Global Interpreter Lock (GIL)&lt;&#x2F;strong&gt;. So, I cloned CPython, compiled it with &lt;code&gt;--disable-gil&lt;&#x2F;code&gt; and wrote a multi-threaded prpgram to process the file. The processing time doubled and I felt the &#x27;skill issue&#x27; meme again.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;it-s-all-bytes-in-the-end-but&quot;&gt;It&#x27;s all bytes in the end but...&lt;&#x2F;h3&gt;
+&lt;p&gt;There&#x27;s a limit. Instead of using &lt;code&gt;readline()&lt;&#x2F;code&gt; and splitting the line at &lt;code&gt;;&lt;&#x2F;code&gt;, read the file charcater by character and parsed the city and tempearture values. This method again increased processing time (obviously), yet I wanted to try it anyway (not a skill issue).&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;final-thoughts&quot;&gt;&lt;strong&gt;Final Thoughts&lt;&#x2F;strong&gt;&lt;&#x2F;h3&gt;
+&lt;p&gt;Well, I nearly read the entire Python documentation (again) and still felt like there were better ways to accomplish the task in Python, which could potentially make it even faster. However, the &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;raghunandanbhat&#x2F;1brc&quot;&gt;solution&lt;&#x2F;a&gt; I implemented is a pretty good one.&lt;&#x2F;p&gt;
+&lt;p&gt;In Java, there are significantly better and faster implementations, often involving impressive bit-shifting techniques. The winners of the challenge completed the task in an astonishing &lt;strong&gt;1.5 seconds&lt;&#x2F;strong&gt;. You can find their solutions in the challenge &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;gunnarmorling&#x2F;1brc&quot;&gt;repo&lt;&#x2F;a&gt; on GitHub. Also, there&#x27;s a nice &lt;a href=&quot;https:&#x2F;&#x2F;tivrfoa.github.io&#x2F;java&#x2F;benchmark&#x2F;performance&#x2F;2024&#x2F;02&#x2F;05&#x2F;1BRC-Timeline.html&quot;&gt;write-up&lt;&#x2F;a&gt; up by &lt;a href=&quot;https:&#x2F;&#x2F;twitter.com&#x2F;tivrfoa&quot;&gt;@tivrfoa&lt;&#x2F;a&gt;. I&#x27;m still wrapping my head around some of the implementations.&lt;&#x2F;p&gt;
+</content>
+        
+    </entry>
+</feed>

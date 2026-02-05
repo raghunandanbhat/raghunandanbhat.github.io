@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>1 Billion Row Challenge in Python | </title>
+    <meta name="title" content="1 Billion Row Challenge in Python">
+<meta name="description" content="">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono&family=Merriweather+Sans:wght@300&family=Merriweather:wght@300&display=swap" rel="stylesheet">
+    <style>
+        :root {
+    --width: 800px;
+    --font-main: Verdana, Merriweather, Merriweather Sans, sans-serif;
+    --font-secondary: Verdana, Merriweather, Merriweather Sans, sans-serif;
+    --font-scale: 1em;
+    --background-color: #fff;
+    --heading-color: #222;
+    --text-color: #444;
+    --link-color: #3273dc;
+    --visited-color: #8b6fcb;
+    --code-background-color: #f2f2f2;
+    --code-color: #222;
+    --blockquote-color: #222;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --background-color: #01242e;
+        --heading-color: #eee;
+        --text-color: #ddd;
+        --link-color: #8cc2dd;
+        --visited-color: #8b6fcb;
+        --code-background-color: #000;
+        --code-color: #ddd;
+        --blockquote-color: #ccc;
+    }
+}
+
+body {
+    font-family: var(--font-secondary);
+    font-size: var(--font-scale);
+    margin: auto;
+    padding:20px;
+    max-width: var(--width);
+    text-align: left;
+    background-color: var(--background-color);
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    line-height: 1.5;
+    color: var(--text-color);
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-main);
+    color: var(--heading-color);
+}
+
+a {
+    color: var(--link-color); cursor: pointer; text-decoration: none;
+}
+a:hover {
+    text-decoration: underline;
+}
+
+nav a {
+    margin-right: 8px;
+}
+nav span.active {
+    font-weight: bold;
+    margin-right: 10px;
+}
+
+strong, b {
+    color: var(--heading-color);
+}
+
+button {
+    margin: 0;
+    cursor: pointer;
+}
+
+main {
+    line-height: 1.6;
+}
+
+table {
+    width: 100%;
+}
+
+hr {
+    border: 0;
+    border-top: 1px
+    dashed;
+}
+
+img {
+    max-width: 100%;
+}
+
+pre code {
+    background-color: var(--code-background-color);
+    color: var(--code-color);
+    display: block;
+    padding: 20px;
+    white-space: pre-wrap;
+    font-size: 0.875rem;
+    overflow-x: auto;
+}
+
+code {
+    font-family: JetBrains Mono, monospace;
+    padding: 2px;
+    background-color: var(--code-background-color);
+    color: var(--code-color);
+    border-radius: 3px;
+}
+
+blockquote {
+    border-left: 1px solid #999;
+    color: var(--code-color);
+    padding-left: 20px;
+    font-style: italic;
+}
+
+footer {
+    padding: 25px 0;
+    text-align: center;
+}
+
+.title:hover { text-decoration: none; }
+.title h1 { font-size: 1.5em;}
+.inline { width: auto !important; }
+.highlight,
+.code { padding: 1px 15px;
+    background-color: var(--code-background-color);
+    color: var(--code-color);
+    border-radius: 3px;
+    margin-block-start: 1em;
+    margin-block-end: 1em;
+    overflow-x: auto;
+}
+
+/* blog post list */
+ul.blog-posts { list-style-type: none; padding:unset; }
+ul.blog-posts li { display: flex; }
+ul.blog-posts li span { flex: 0 0 130px; }
+ul.blog-posts li a:visited { color: var(--visited-color); }
+.tags {font-size: smaller; }
+
+    </style>
+</head>
+<body>
+  <header>
+  <a href="/" class="title">
+    <h1></h1>
+  </a>
+  <nav aria-label="site">
+      <a href="/">Home</a>
+      <a href="/blog/">Blog</a>
+      <a href="/projects/">Projects</a>
+      <a href="/misc/">misc.</a>
+  </nav>
+</header>
+<h1>1 Billion Row Challenge in Python</h1>
+      <p>
+        <i>
+          <time datetime="2024-01-23T00:00:00+00:00" pubdate>2024-01-23</time>
+        </i>
+      </p>
+    <details open>
+      <summary>Table of contents</summary>
+    <ul>
+        <li>
+          <a href="/blog/1brc/#the-problem">The Problem</a>
+        </li>
+        <li>
+          <a href="/blog/1brc/#attempt-1-the-python-way-of-doing-things">Attempt 1: The Python Way of Doing Things</a>
+        </li>
+        <li>
+          <a href="/blog/1brc/#attempt-2-use-multicores-when-you-can">Attempt 2: Use multicores when you can</a>
+        </li>
+        <li>
+          <a href="/blog/1brc/#attempt-3-it-s-all-bytes-in-the-end">Attempt 3: It&#x27;s all bytes in the end</a>
+        </li>
+        <li>
+          <a href="/blog/1brc/#attempt-4-last-few-drops-of-performance">Attempt 4: Last few drops of performance</a>
+        </li>
+        <li>
+          <a href="/blog/1brc/#failed-attempts-and-skill-issues">Failed attempts and Skill Issues</a>
+        </li>
+        <li>
+          <a href="/blog/1brc/#multi-threading-in-python">Multi-threading in Python</a>
+        </li>
+        <li>
+          <a href="/blog/1brc/#it-s-all-bytes-in-the-end-but">It&#x27;s all bytes in the end but...</a>
+        </li>
+        <li>
+          <a href="/blog/1brc/#final-thoughts">Final Thoughts</a>
+        </li>
+    </ul>
+    </details>
+  <main>
+    <p>On January 1st of this year, <a href="https://twitter.com/gunnarmorling">Gunnar Morling</a> launched a new challenge known as the <a href="https://github.com/gunnarmorling/1brc">1 Billion Row Challenge</a>. The objective? To read and aggregate 1 billion rows from a text file as quickly as possible. While the challenge officially requires submissions in Java to be eligible for winning, Gunnar allowed participants to showcase solutions in other languages in the <a href="https://github.com/gunnarmorling/1brc/discussions/62">Show &amp; Tell</a> section. In this post, I'll detail my attempt at tackling this challenge using my language of choice: Python, and without relying on any external Python packages.</p>
+<h3 id="the-problem"><strong>The Problem</strong></h3>
+<p>You have a text file named <code>measurements.txt</code> containing 1 billion rows. Each row consists of two values: a weather station name (city) and the recorded temperature for that city, separated by a semi-colon.</p>
+<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>Hamburg;12.0
+</span><span>Bulawayo;8.9
+</span><span>Palembang;38.8
+</span><span>.....
+</span></code></pre>
+<p>You are supposed to read this file and print out <code>min</code>, <code>mean</code> and <code>max</code> temperature for each city in the following format.</p>
+<pre style="background-color:#2b303b;color:#c0c5ce;"><code><span>{Abha=-23.0/18.0/59.2, Abidjan=-16.2/26.0/67.3, Abéché=-10.0/29.4/69.0, Accra=-10.1/26.4/66.4, ...}
+</span></code></pre>
+<h3 id="attempt-1-the-python-way-of-doing-things"><strong>Attempt 1: The Python Way of Doing Things</strong></h3>
+<p>We will use a straightforward method to read from the file and aggregate the values in a Python dictionary. For each city we encounter in the file, we will record the minimum and maximum temperature, as well as the sum and frequency of occurrences of that city in the file (which we need for calculating the mean).</p>
+<p>We will read the text file line by line using Python's <code>readline()</code> method. This method operates like a generator and is lazy, meaning it reads only what is needed at the moment. Therefore, we do not need to load the entire 1 billion rows into memory, resulting in faster processing and reduced memory consumption.</p>
+<pre data-lang="py" style="background-color:#2b303b;color:#c0c5ce;" class="language-py "><code class="language-py" data-lang="py"><span style="color:#b48ead;">with </span><span style="color:#96b5b4;">open</span><span>(&#39;</span><span style="color:#a3be8c;">measurements.txt</span><span>&#39;) </span><span style="color:#b48ead;">as </span><span>f:
+</span><span>    </span><span style="color:#b48ead;">for </span><span>line </span><span style="color:#b48ead;">in </span><span>f:
+</span><span>        </span><span style="color:#65737e;"># process each line
+</span></code></pre>
+<p>This method is very readable and works best when reading fairly large files. However, in this case, we need something different and better. With this approach, I was able to read and solve the problem in approximately <strong>870 seconds</strong>. However, compared to Java solutions written at that time, which could solve it in <strong>5 seconds</strong>, this performance is a joke.</p>
+<h3 id="attempt-2-use-multicores-when-you-can"><strong>Attempt 2: Use multicores when you can</strong></h3>
+<p>The next obvious step is to use all the cores you have got to run the same process with chunks of data. Python supports multi processing and provides nice interface through <code>concurrent.futures</code> module.</p>
+<p>Spawn multiple processes and make each of these processes to read 100 million lines from the file. Process-1 reads first 100 million lines, Process-2 reading next 100 million lines and so on. One nice aspect of this problem is we are just reading the file and not writing to it. That's one huge relief.</p>
+<p>Managing the results from these processes is crucial. Fortunately, Python offers straightforward methods within <code>concurrent.futures</code> to gather results from multiple processes. We can then combine these results to construct a single Python dictionary.</p>
+<pre data-lang="py" style="background-color:#2b303b;color:#c0c5ce;" class="language-py "><code class="language-py" data-lang="py"><span style="color:#bf616a;">MAX_LINES </span><span>= </span><span style="color:#d08770;">1_000_000_000
+</span><span style="color:#bf616a;">MAX_LINES_PER_CHUNK </span><span>= </span><span style="color:#d08770;">100_000_000
+</span><span>
+</span><span style="color:#b48ead;">def </span><span style="color:#8fa1b3;">process_chunk</span><span>(</span><span style="color:#bf616a;">start</span><span>, </span><span style="color:#bf616a;">end</span><span>):
+</span><span>    </span><span style="color:#65737e;"># read 100 million lines and process here
+</span><span>    </span><span style="color:#65737e;"># return the dictionary of {city : {min: , max: , sum: , count: ,}}
+</span><span>
+</span><span style="color:#b48ead;">with </span><span>concurrent.futures.</span><span style="color:#bf616a;">ProcessPoolExecutor</span><span>() </span><span style="color:#b48ead;">as </span><span>executor:
+</span><span>    chunk_results = [executor.</span><span style="color:#bf616a;">submit</span><span>(process_chunk, start, (start + </span><span style="color:#bf616a;">MAX_LINES_PER_CHUNK</span><span>)) </span><span style="color:#b48ead;">for </span><span>start </span><span style="color:#b48ead;">in </span><span style="color:#96b5b4;">range</span><span>(</span><span style="color:#d08770;">0</span><span>, </span><span style="color:#bf616a;">MAX_LINES</span><span>, </span><span style="color:#bf616a;">MAX_LINES_PER_CHUNK</span><span>)]
+</span><span>
+</span><span>    </span><span style="color:#b48ead;">for </span><span>future </span><span style="color:#b48ead;">in </span><span>concurrent.futures.</span><span style="color:#bf616a;">as_completed</span><span>(chunk_results):
+</span><span>        </span><span style="color:#65737e;"># combine the result into one big python dictionary
+</span></code></pre>
+<p>With multi processing, the run time came down to <strong>~320 seconds</strong>. That's a nice improvement.</p>
+<h3 id="attempt-3-it-s-all-bytes-in-the-end"><strong>Attempt 3: It's all bytes in the end</strong></h3>
+<p>In the last attempt, the idea of processing the files as chunks was correct. However, the approach we used was flawed. When reading line by line, there's no direct method in Python to jump to a specific line number. For instance, if you want to start reading from the 101st line, you must first loop through the preceding 100 lines, wasting CPU cycles.</p>
+<p>To solve this issue, we need to adopt a different perspective. Instead of treating the file as a sequence of lines, we can view it as a stream of bytes. This shift in perspective allows us to utilize the <code>seek</code> function to skip to the exact byte position in the file. With this capability, the challenge becomes determining these positions efficiently.</p>
+<p>We begin by dividing the total file size by the maximum number of CPU cores available to determine the size of each chunk. Each process should receive nearly equal amounts of data to process. However, there's a potential problem: we can't guarantee that a line ends at the exact <code>size_per_core</code> byte position. This means that we might end up in the middle of a line, reading an incomplete line.</p>
+<p>To address this issue, we advance the position until we encounter a newline (<code>\n</code>) character, which signifies the end of a line. We consider this position as the end of the chunk and repeat this process for the rest of the file.</p>
+<pre data-lang="py" style="background-color:#2b303b;color:#c0c5ce;" class="language-py "><code class="language-py" data-lang="py"><span style="color:#b48ead;">def </span><span style="color:#8fa1b3;">get_chunk_boundaries</span><span>():
+</span><span>    f_size = os.</span><span style="color:#bf616a;">stat</span><span>(</span><span style="color:#bf616a;">INPUT_FILE_PATH</span><span>).st_size
+</span><span>    size_per_core = f_size // os.</span><span style="color:#bf616a;">cpu_count</span><span>()
+</span><span>    boundaries = []
+</span><span>    </span><span style="color:#b48ead;">with </span><span>io.</span><span style="color:#bf616a;">open</span><span>(</span><span style="color:#bf616a;">INPUT_FILE_PATH</span><span>, &#39;</span><span style="color:#a3be8c;">rb</span><span>&#39;) </span><span style="color:#b48ead;">as </span><span>f:
+</span><span>        start_pos = </span><span style="color:#d08770;">0
+</span><span>        end_pos = start_pos + size_per_core
+</span><span>        </span><span style="color:#b48ead;">while </span><span>end_pos &lt; f_size:
+</span><span>            </span><span style="color:#b48ead;">if </span><span>(start_pos + size_per_core) &lt; f_size:
+</span><span>                f.</span><span style="color:#bf616a;">seek</span><span>(size_per_core, os.</span><span style="color:#bf616a;">SEEK_CUR</span><span>)
+</span><span>                byte_char = f.</span><span style="color:#bf616a;">read</span><span>(</span><span style="color:#d08770;">1</span><span>)
+</span><span>                </span><span style="color:#b48ead;">while </span><span>byte_char != </span><span style="color:#b48ead;">b</span><span>&#39;&#39; and byte_char != </span><span style="color:#b48ead;">b</span><span>&#39;</span><span style="color:#96b5b4;">\n</span><span>&#39;:
+</span><span>                    </span><span style="color:#65737e;"># print(f&quot;char at {f.tell()}: {byte_char}&quot;)
+</span><span>                    byte_char = f.</span><span style="color:#bf616a;">read</span><span>(</span><span style="color:#d08770;">1</span><span>)
+</span><span>                end_pos = f.</span><span style="color:#bf616a;">tell</span><span>()
+</span><span>            </span><span style="color:#b48ead;">else</span><span>:
+</span><span>                end_pos = f_size
+</span><span>            boundaries.</span><span style="color:#bf616a;">append</span><span>((start_pos, end_pos))
+</span><span>            </span><span style="color:#65737e;"># print(f&quot;start: {start_pos}, end: {end_pos}, size-diff: {end_pos-start_pos}&quot;)
+</span><span>            start_pos = end_pos
+</span><span>    </span><span style="color:#b48ead;">return </span><span>boundaries
+</span></code></pre>
+<pre data-lang="py" style="background-color:#2b303b;color:#c0c5ce;" class="language-py "><code class="language-py" data-lang="py"><span style="color:#b48ead;">def </span><span style="color:#8fa1b3;">process_chunk</span><span>(</span><span style="color:#bf616a;">start</span><span>, </span><span style="color:#bf616a;">end</span><span>):
+</span><span>    </span><span style="color:#65737e;"># process the chunk here
+</span><span>
+</span><span>chunk_boundaries = </span><span style="color:#bf616a;">get_chunk_boundaries</span><span>()
+</span><span style="color:#b48ead;">with </span><span>concurrent.futures.</span><span style="color:#bf616a;">ProcessPoolExecutor</span><span>(</span><span style="color:#bf616a;">max_workers</span><span>=os.</span><span style="color:#bf616a;">cpu_count</span><span>()) </span><span style="color:#b48ead;">as </span><span>executor:
+</span><span>    chunk_result_futures = [executor.</span><span style="color:#bf616a;">submit</span><span>(process_chunk, start, end) </span><span style="color:#b48ead;">for </span><span>start, end </span><span style="color:#b48ead;">in </span><span>chunk_boundaries]
+</span><span>    </span><span style="color:#b48ead;">for </span><span>future </span><span style="color:#b48ead;">in </span><span>concurrent.futures.</span><span style="color:#bf616a;">as_completed</span><span>(chunk_results):
+</span><span>        </span><span style="color:#65737e;"># combine the result into one big python dictionary
+</span></code></pre>
+<p>After establishing the boundaries of the file chunks, we process chunks with multiprocessing and aggregate the results. The task was completed in <strong>162 seconds</strong>.</p>
+<h3 id="attempt-4-last-few-drops-of-performance"><strong>Attempt 4: Last few drops of performance</strong></h3>
+<p>After exhausting the obvious methods to enhance performance, we delved into less conventional approaches. This is where things got a bit crazy - memory mapping, minimizing function calls, reducing exceptions, and branchless programming.</p>
+<ol>
+<li>Memory map each chunk to a range of addresses within the address space of each process.</li>
+<li>Instead of using built-in <code>min</code> and <code>max</code> functions, I opted for simple <code>if</code> statements.</li>
+<li>Replaced the nested dictionaries used to store results with dictionaries of <code>lists</code>.</li>
+</ol>
+<p>Despite the unconventional nature of these optimizations, they proved highly effective. The task was completed in 72 seconds. Increasing the number of processes to 16 reduced time to just <strong>64 seconds</strong>.</p>
+<h3 id="failed-attempts-and-skill-issues"><strong>Failed attempts and Skill Issues</strong></h3>
+<p>During these attempts, I experimented with various other tricks and felt the 'skill issue' meme.</p>
+<p align="center">
+    <img src="../../imgs/skill-issue.png"/>
+</p>
+<h3 id="multi-threading-in-python">Multi-threading in Python</h3>
+<p>This realm of programming is fraught with risks, particularly if you're not keen on debugging concurrency issues. Also, Python is not multi-threaded by default; rather, you have to make it multi-threaded by disabling the infamous <strong>Global Interpreter Lock (GIL)</strong>. So, I cloned CPython, compiled it with <code>--disable-gil</code> and wrote a multi-threaded prpgram to process the file. The processing time doubled and I felt the 'skill issue' meme again.</p>
+<h3 id="it-s-all-bytes-in-the-end-but">It's all bytes in the end but...</h3>
+<p>There's a limit. Instead of using <code>readline()</code> and splitting the line at <code>;</code>, read the file charcater by character and parsed the city and tempearture values. This method again increased processing time (obviously), yet I wanted to try it anyway (not a skill issue).</p>
+<h3 id="final-thoughts"><strong>Final Thoughts</strong></h3>
+<p>Well, I nearly read the entire Python documentation (again) and still felt like there were better ways to accomplish the task in Python, which could potentially make it even faster. However, the <a href="https://github.com/raghunandanbhat/1brc">solution</a> I implemented is a pretty good one.</p>
+<p>In Java, there are significantly better and faster implementations, often involving impressive bit-shifting techniques. The winners of the challenge completed the task in an astonishing <strong>1.5 seconds</strong>. You can find their solutions in the challenge <a href="https://github.com/gunnarmorling/1brc">repo</a> on GitHub. Also, there's a nice <a href="https://tivrfoa.github.io/java/benchmark/performance/2024/02/05/1BRC-Timeline.html">write-up</a> up by <a href="https://twitter.com/tivrfoa">@tivrfoa</a>. I'm still wrapping my head around some of the implementations.</p>
+
+  </main>
+  <p>
+        Tags:
+          <a href="/tags/python/">#python</a>
+  </p>
+<footer>
+</footer>
+</body>
+</html>

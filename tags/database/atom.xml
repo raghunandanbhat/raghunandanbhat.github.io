@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
+    <title> - database</title>
+    <link href="/tags/database/atom.xml" rel="self" type="application/atom+xml"/>
+    <link href="/"/>
+    <generator uri="https://www.getzola.org/">Zola</generator>
+    <updated>2025-01-20T00:00:00+00:00</updated>
+    <id>/tags/database/atom.xml</id>
+    <entry xml:lang="en">
+        <title>How Postgres Extensions Actually work</title>
+        <published>2025-01-20T00:00:00+00:00</published>
+        <updated>2025-01-20T00:00:00+00:00</updated>
+        <author>
+          <name>Unknown</name>
+        </author>
+        <link rel="alternate" href="/blog/pg-extension/" type="text/html"/>
+        <id>/blog/pg-extension/</id>
+        
+        <content type="html">&lt;p&gt;PostgreSQL extensions allow developers to modify or extend the behavior of the database server without changing its core source code. One of the key mechanisms used in extensions is hooks, which provide predefined points in the PostgreSQL code where custom logic can be injected. In this post, we&#x27;ll explore how hooks work in PostgreSQL extensions and how they are initialized and called.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;1-hooks-in-postgresql-architecture&quot;&gt;1. Hooks in PostgreSQL Architecture&lt;&#x2F;h3&gt;
+&lt;p&gt;Hooks in PostgreSQL are implemented as extern function pointers within its core code. These hooks enable extensions to override or enhance specific database operations by assigning custom functions to them.&lt;&#x2F;p&gt;
+&lt;p&gt;For example, PostgreSQL provides a &lt;code&gt;planner_hook&lt;&#x2F;code&gt; that can modify the query planning process:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;c++&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-c++ &quot;&gt;&lt;code class=&quot;language-c++&quot; data-lang=&quot;c++&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;typedef void &lt;&#x2F;span&gt;&lt;span&gt;(*planner_hook_type) (Query *parse, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;int&lt;&#x2F;span&gt;&lt;span&gt; cursorOptions, ParamListInfo boundParams);
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;extern&lt;&#x2F;span&gt;&lt;span&gt; PGDLLIMPORT planner_hook_type planner_hook;
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;Here, &lt;code&gt;planner_hook&lt;&#x2F;code&gt; is a function pointer that extensions can assign to their custom function to alter query planning behavior.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;2-initialization-in-the-extension&quot;&gt;2. Initialization in the Extension&lt;&#x2F;h3&gt;
+&lt;p&gt;Hooks in PostgreSQL extensions are typically initialized inside a dedicated function, such as &lt;code&gt;InitHooks()&lt;&#x2F;code&gt;. This function assigns custom functions to the appropriate hooks while preserving the original behavior.&lt;&#x2F;p&gt;
+&lt;p&gt;Example:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;c++&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-c++ &quot;&gt;&lt;code class=&quot;language-c++&quot; data-lang=&quot;c++&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;static&lt;&#x2F;span&gt;&lt;span&gt; planner_hook_type prev_planner_hook = &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;NULL&lt;&#x2F;span&gt;&lt;span&gt;;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;void &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;InitHooks&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;void&lt;&#x2F;span&gt;&lt;span&gt;) {
+&lt;&#x2F;span&gt;&lt;span&gt;    prev_planner_hook = planner_hook; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; Save the original hook
+&lt;&#x2F;span&gt;&lt;span&gt;    planner_hook = my_custom_planner_hook;
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;Here, the original &lt;code&gt;planner_hook&lt;&#x2F;code&gt; (if any) is stored for later use, and &lt;code&gt;planner_hook&lt;&#x2F;code&gt; is assigned to &lt;code&gt;my_custom_planner_hook&lt;&#x2F;code&gt;.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;3-how-postgresql-calls-hooks&quot;&gt;3. How PostgreSQL Calls Hooks&lt;&#x2F;h3&gt;
+&lt;p&gt;When PostgreSQL executes an operation with a hook available (e.g., planning, execution, transaction handling), it checks if the hook function pointer is set. If set, PostgreSQL calls the assigned function instead of executing its default behavior.&lt;&#x2F;p&gt;
+&lt;p&gt;For example, during query planning:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;c++&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-c++ &quot;&gt;&lt;code class=&quot;language-c++&quot; data-lang=&quot;c++&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span&gt;(planner_hook)
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span&gt;(*planner_hook)(parse, cursorOptions, boundParams);
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;else
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;standard_planner&lt;&#x2F;span&gt;&lt;span&gt;(parse, cursorOptions, boundParams);
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;If an extension has set &lt;code&gt;planner_hook&lt;&#x2F;code&gt;, PostgreSQL calls &lt;code&gt;my_custom_planner_hook()&lt;&#x2F;code&gt;. Otherwise, it defaults to &lt;code&gt;standard_planner()&lt;&#x2F;code&gt;.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;4-registering-inithooks&quot;&gt;4. Registering &lt;code&gt;InitHooks()&lt;&#x2F;code&gt;&lt;&#x2F;h3&gt;
+&lt;p&gt;The &lt;code&gt;InitHooks()&lt;&#x2F;code&gt; function is typically called when the extension is initialized. This can be done in two ways:&lt;&#x2F;p&gt;
+&lt;p&gt;Via the &lt;code&gt;_PG_init()&lt;&#x2F;code&gt; Function&lt;&#x2F;p&gt;
+&lt;p&gt;If your extension uses the &lt;code&gt;shared_preload_libraries&lt;&#x2F;code&gt; mechanism, PostgreSQL will call &lt;code&gt;_PG_init()&lt;&#x2F;code&gt; when the server loads the extension. You can call &lt;code&gt;InitHooks()&lt;&#x2F;code&gt; from within &lt;code&gt;_PG_init()&lt;&#x2F;code&gt;.&lt;&#x2F;p&gt;
+&lt;p&gt;Example:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;c++&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-c++ &quot;&gt;&lt;code class=&quot;language-c++&quot; data-lang=&quot;c++&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;void &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;_PG_init&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;void&lt;&#x2F;span&gt;&lt;span&gt;) {
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;InitHooks&lt;&#x2F;span&gt;&lt;span&gt;();
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;During Extension Execution&lt;&#x2F;p&gt;
+&lt;p&gt;If hooks need to be initialized dynamically, you might call &lt;code&gt;InitHooks()&lt;&#x2F;code&gt; from an SQL function or another entry point in your extension.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;5-example-planner-hook-implementation&quot;&gt;5. Example: Planner Hook Implementation&lt;&#x2F;h3&gt;
+&lt;p&gt;Here’s an example of a planner hook implementation:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;c++&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-c++ &quot;&gt;&lt;code class=&quot;language-c++&quot; data-lang=&quot;c++&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;static&lt;&#x2F;span&gt;&lt;span&gt; PlannedStmt *&lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;my_custom_planner_hook&lt;&#x2F;span&gt;&lt;span&gt;(Query *&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;parse&lt;&#x2F;span&gt;&lt;span&gt;, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;int &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;cursorOptions&lt;&#x2F;span&gt;&lt;span&gt;, ParamListInfo &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;boundParams&lt;&#x2F;span&gt;&lt;span&gt;) {
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;elog&lt;&#x2F;span&gt;&lt;span&gt;(INFO, &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;Custom planner hook called&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;);
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; Optionally call the original planner
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;if &lt;&#x2F;span&gt;&lt;span&gt;(prev_planner_hook)
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;prev_planner_hook&lt;&#x2F;span&gt;&lt;span&gt;(parse, cursorOptions, boundParams);
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;else
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;standard_planner&lt;&#x2F;span&gt;&lt;span&gt;(parse, cursorOptions, boundParams);
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;void &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;InitHooks&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;void&lt;&#x2F;span&gt;&lt;span&gt;) {
+&lt;&#x2F;span&gt;&lt;span&gt;    prev_planner_hook = planner_hook; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; Save the original hook
+&lt;&#x2F;span&gt;&lt;span&gt;    planner_hook = my_custom_planner_hook; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&#x2F;&#x2F; Set the custom hook
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;void &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;_PG_init&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;void&lt;&#x2F;span&gt;&lt;span&gt;) {
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;InitHooks&lt;&#x2F;span&gt;&lt;span&gt;();
+&lt;&#x2F;span&gt;&lt;span&gt;}
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;h3 id=&quot;6-what-happens-during-query-execution&quot;&gt;6. What Happens During Query Execution?&lt;&#x2F;h3&gt;
+&lt;p&gt;During query processing, PostgreSQL goes through multiple stages, including parsing, planning, and execution. At each stage, it checks if a corresponding hook is set. If a hook is assigned by an extension, the custom function executes, allowing modifications or additional logging.&lt;&#x2F;p&gt;
+</content>
+        
+    </entry>
+</feed>

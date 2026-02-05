@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
+    <title> - IDE</title>
+    <link href="/tags/ide/atom.xml" rel="self" type="application/atom+xml"/>
+    <link href="/"/>
+    <generator uri="https://www.getzola.org/">Zola</generator>
+    <updated>2023-12-09T00:00:00+00:00</updated>
+    <id>/tags/ide/atom.xml</id>
+    <entry xml:lang="en">
+        <title>neovim - Things you should know before you start</title>
+        <published>2023-12-09T00:00:00+00:00</published>
+        <updated>2023-12-09T00:00:00+00:00</updated>
+        <author>
+          <name>Unknown</name>
+        </author>
+        <link rel="alternate" href="/blog/nvim/" type="text/html"/>
+        <id>/blog/nvim/</id>
+        
+        <content type="html">&lt;p&gt;If you have time or nothing exciting going at work or you want your code editor to break like your production and you want to spend hours fixing it, you should try neovim. Also, if you move around fast on your computer screens, people assume you’re smart, but that’s not what makes you smart. Configure your neovim, make it work and I’ll consider you smart. Trolling aside, let’s get started.&lt;&#x2F;p&gt;
+&lt;p&gt;In all seriousness, these are the things you should know before you try to write your neovim config. This is not a guide to writing your neovim config, it&#x27;s a step 0. It explains what&#x27;s what and why you need it.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;neovim&quot;&gt;neovim&lt;&#x2F;h3&gt;
+&lt;p&gt;Best IDE or should I say PDE - personal development environment. It&#x27;s a VIM based text editor and if you have ever used a terminal, I&#x27; sure you know what VIM is. It&#x27;s not as bad as you think it is when freshly installed, but you can make it better.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;plugin-manager&quot;&gt;Plugin Manager&lt;&#x2F;h3&gt;
+&lt;p&gt;If you want to make neovim look, feel and function better, you need plugins. To install and manage them you need a plugin manager. There’s packer.nvim, lazy.nvim, etc
+Whenever you want to add&#x2F;change something to the neovim editor, like a color schemes or fuzzy finders, you have to install them using this Plugin manager.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;fuzzy-finder&quot;&gt;Fuzzy Finder&lt;&#x2F;h3&gt;
+&lt;p&gt;Fancy way of saying - ‘search button’, except there is no button here. It lets you search and get to those places fast and you don’t have to click. There’s telescope, harpoon(not exactly, but something close).&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;tree-sitter&quot;&gt;Tree-sitter&lt;&#x2F;h3&gt;
+&lt;p&gt;Yet another fancy word to say - language parser, it&#x27;s a set of programming language parsers, so that your neovim can easily understand your code text and do certain things with it (like syntax highlighting, etc). Let me try to simplify it.
+You write code in Python, you and I know that syntax. But for your overpowered editor, it&#x27;s just a text. To make sure you’re writing correct syntax, we need this tree sitter.
+What tree sitter does is, break down your code according to grammar of your programming language and creates a parse tree. Based on this, it highlights your code. If you edit your code, it just updates part of the parse tree, that’s why it is fast. If you want to know more, read &lt;a href=&quot;https:&#x2F;&#x2F;thevaluable.dev&#x2F;tree-sitter-neovim-overview&#x2F;&quot;&gt;this&lt;&#x2F;a&gt;.
+If you don’t want to know any of this, just remember - make sure your tree sitter has parser for all programming languages you use(yes, including Haskell), otherwise no syntax highlighting.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;language-server-protocol&quot;&gt;Language Server Protocol&lt;&#x2F;h3&gt;
+&lt;p&gt;Auto complete, jumpt to definition, find-references, renaming, refactoring and all other goodness of full fledged editor is enabled by LSP.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;vim-key-mapping&quot;&gt;vim key mapping&lt;&#x2F;h3&gt;
+&lt;p&gt;These are keyboard shortcuts. This what makes you move faster and makes you look smart in your group, unless there’s another neovimmer who’s faster than you. You can create your own obscure key maps and make your editor unusable to others (that’s why its called a PDE and not an IDE).&lt;&#x2F;p&gt;
+&lt;p&gt;Now that you know the basics, go get started.&lt;&#x2F;p&gt;
+</content>
+        
+    </entry>
+</feed>

@@ -1,0 +1,486 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
+    <title> - distributed systems</title>
+    <link href="/tags/distributed-systems/atom.xml" rel="self" type="application/atom+xml"/>
+    <link href="/"/>
+    <generator uri="https://www.getzola.org/">Zola</generator>
+    <updated>2024-08-10T00:00:00+00:00</updated>
+    <id>/tags/distributed-systems/atom.xml</id>
+    <entry xml:lang="en">
+        <title>Notes on Raft</title>
+        <published>2024-08-10T00:00:00+00:00</published>
+        <updated>2024-08-10T00:00:00+00:00</updated>
+        <author>
+          <name>Unknown</name>
+        </author>
+        <link rel="alternate" href="/blog/raft/" type="text/html"/>
+        <id>/blog/raft/</id>
+        
+        <content type="html">&lt;p&gt;Raft is a protocol for implementing distributed consensus. Raft builds a replicated state machine using a Replicated log. It considers log as a source of truth and can be used to build inearizable storage.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;writes&quot;&gt;Writes:&lt;&#x2F;h3&gt;
+&lt;ul&gt;
+&lt;li&gt;clients first write to leader. the leader then sends the write to all the followers.&lt;&#x2F;li&gt;
+&lt;li&gt;followers can respond ‘yes’ or ‘no’ indicating that they have written the value to their log
+&lt;ul&gt;
+&lt;li&gt;prefix: a point or index in the log, anything previous to the prefix will be same on leader and follower&lt;&#x2F;li&gt;
+&lt;li&gt;suffix: a point in log, where anything beyond this index in the log may not be in sync wrt to leader and follower&lt;&#x2F;li&gt;
+&lt;li&gt;whenever writes are proposed, leader sends a prefix and suffix. if the prefix matches with log in follower, follower accepts it and responds ‘yes’&lt;&#x2F;li&gt;
+&lt;li&gt;if the prefix is not matched, it responds ‘no’. and the leader retries again with (prefix-1)&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;if the leader gets majority ‘yes’ from the followers, a quorum is reached. leader commits the message to itself&lt;&#x2F;li&gt;
+&lt;li&gt;sends the commit message to all the followers saying this is the value to commit.&lt;&#x2F;li&gt;
+&lt;li&gt;followers then commit and persist that write.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;h3 id=&quot;reads&quot;&gt;Reads:&lt;&#x2F;h3&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;if a client reads from a follower and realizes that data is stale, it sends a SYNC signal to leader&lt;&#x2F;p&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;
+&lt;p&gt;leader propagates this to all followers indicating, to update themselves.&lt;&#x2F;p&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;
+&lt;p&gt;once the follower is updated, the client reads from the follower&lt;&#x2F;p&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;
+&lt;p&gt;Leader Election&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;Select one of the servers to act as a leader&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;
+&lt;p&gt;Log replication&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;leader takes commands from the clients, appends it to the log&lt;&#x2F;li&gt;
+&lt;li&gt;leader replicates its log to the followers or other servers (over writing inconsistencies)&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;
+&lt;p&gt;Safety&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;only a server with up-to-date log can become the leader&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;h3 id=&quot;leader-election&quot;&gt;Leader Election:&lt;&#x2F;h3&gt;
+&lt;ul&gt;
+&lt;li&gt;Election happens after the timeout. It can happen automatically or it can happen after a leader goes offline.&lt;&#x2F;li&gt;
+&lt;li&gt;A leader continues to be a leader of a term until a follower stops receiving heartbeats&lt;&#x2F;li&gt;
+&lt;li&gt;Terms - or term number
+&lt;ul&gt;
+&lt;li&gt;its a increasing value that represents a term.&lt;&#x2F;li&gt;
+&lt;li&gt;all nodes including leader will be in the same term.&lt;&#x2F;li&gt;
+&lt;li&gt;anything lower than this term number will not accepted by the follower nodes.&lt;&#x2F;li&gt;
+&lt;li&gt;each time when leader election happens, a node which is trying to become the leader proposes an incremented term number, when asking for votes from other nodes&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;the node which wants to become the leader, increases the term number and asks other nodes to vote. This node also votes itself&lt;&#x2F;li&gt;
+&lt;li&gt;when it gets majority of votes, it becomes the leader and sends out a heartbeat to others&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;h3 id=&quot;log-replication&quot;&gt;Log replication&lt;&#x2F;h3&gt;
+&lt;h4 id=&quot;normal-case-log-replication&quot;&gt;Normal case Log replication&lt;&#x2F;h4&gt;
+&lt;ul&gt;
+&lt;li&gt;leader sends out replication requests to replicas.&lt;&#x2F;li&gt;
+&lt;li&gt;prefix and suffix are also called match index and next index
+&lt;ul&gt;
+&lt;li&gt;replica and leader agrees everything up to match index&lt;&#x2F;li&gt;
+&lt;li&gt;new entires will be added to next index&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;once a log entry reaches majority of the clusters, it is committed. otherwise the log entry will be in uncommitted state in all of the replicas and the leader&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;h4 id=&quot;log-replication-when-there-are-inconsistencies&quot;&gt;Log replication when there are inconsistencies&lt;&#x2F;h4&gt;
+&lt;h5 id=&quot;missing-entires&quot;&gt;missing entires&lt;&#x2F;h5&gt;
+&lt;ul&gt;
+&lt;li&gt;when a replica which was offline for a long time comes up, it will be behind in its log state. So every time leader sends the message to replicate a log, it also asks the replica for a value at index with an term t (term 2 here). do you have a value at index-3 from term-2? if no, the next index moves back, until the leader finds an agreeable value&lt;&#x2F;li&gt;
+&lt;li&gt;then missing values are copied and indexes are moved to make the replica up to date&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p align=&quot;center&quot;&gt;
+    &lt;img src=&quot;..&#x2F;..&#x2F;imgs&#x2F;raft1.png&quot;&#x2F;&gt;
+&lt;&#x2F;p&gt;
+&lt;h5 id=&quot;extraneous-entries&quot;&gt;extraneous entries&lt;&#x2F;h5&gt;
+&lt;ul&gt;
+&lt;li&gt;when a replica (which was a leader before) comes online and it has some uncommitted changes, those will be overwritten&lt;&#x2F;li&gt;
+&lt;li&gt;the new leader sends out a check similar to asking term and logs, the uncommitted entries are overwritten&lt;&#x2F;li&gt;
+&lt;li&gt;this is how s1(pre leader) with uncommitted changes look like. new leader s2 is sending message to s1 asking for the term at the index and over writes it&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p align=&quot;center&quot;&gt;
+    &lt;img src=&quot;..&#x2F;..&#x2F;imgs&#x2F;raft2.png&quot;&#x2F;&gt;
+&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;safety&quot;&gt;Safety&lt;&#x2F;h3&gt;
+&lt;ul&gt;
+&lt;li&gt;when a candidate (a node which asks for vote become leader) asks for vote to become the leader, it also sends the status of its log.
+&lt;ul&gt;
+&lt;li&gt;what status is sent? - term of the last log entry and length of the log&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;in the above case, S5 is does not have any entry in the log. when it tries become the leader, other nodes which have more up to date logs rejects S5 as leader and does not vote.&lt;&#x2F;li&gt;
+&lt;li&gt;during the next timeout, a new candidate with more up to date log becomes a leader&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;Types of messages used:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;Request Vote&lt;&#x2F;li&gt;
+&lt;li&gt;Append Entry&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+</content>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>TLDR - Spark and RDD (2010)</title>
+        <published>2024-07-26T00:00:00+00:00</published>
+        <updated>2024-07-26T00:00:00+00:00</updated>
+        <author>
+          <name>Unknown</name>
+        </author>
+        <link rel="alternate" href="/blog/tldr-spark-rdd/" type="text/html"/>
+        <id>/blog/tldr-spark-rdd/</id>
+        
+        <content type="html">&lt;p&gt;&lt;a href=&quot;http:&#x2F;&#x2F;nil.csail.mit.edu&#x2F;6.5840&#x2F;2023&#x2F;papers&#x2F;zaharia-spark.pdf&quot;&gt;original RDD paper by matei zaharia&lt;&#x2F;a&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;unified (distributed) engine  for large-scale data processing and analytics.
+spark generalizes the map and reduce steps into a complete notion of multistep data flow graph.
+it supports iterative applications on data. multiple map reduce operations loop over same data&lt;&#x2F;p&gt;
+&lt;p&gt;Its a unified engine that makes large workload easy and fast&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;prod-files-secure.s3.us-west-2.amazonaws.com&#x2F;2f23d75d-8cd2-4d5a-9e68-9e5a290e391d&#x2F;e5c84b3c-5d75-4288-a4a5-49d8681eae7e&#x2F;Untitled.png&quot; alt=&quot;Untitled&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;Spark uses RDD&lt;&#x2F;p&gt;
+&lt;p&gt;It does not execute every input provided by the user. It queues them into some list of tasks to be done in a manner of DAG - directed acyclic graph.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;architecture&quot;&gt;Architecture&lt;&#x2F;h3&gt;
+&lt;ul&gt;
+&lt;li&gt;master-worker architecture. master is called driver program and the other nodes are called worker nodes&lt;&#x2F;li&gt;
+&lt;li&gt;you create a &lt;code&gt;SparkContext&lt;&#x2F;code&gt;  object in your program, this is called driver program&lt;&#x2F;li&gt;
+&lt;li&gt;to run on a cluster, &lt;code&gt;SparkContext&lt;&#x2F;code&gt;  can connect to several types of cluster managers to allocate resources across application. this can be spark’s own standalone manager, Mesos, YARN, or Kubernetes.&lt;&#x2F;li&gt;
+&lt;li&gt;Once connected to cluster manager, spark acquires &lt;code&gt;executor&lt;&#x2F;code&gt; nodes in the cluster. this is where computations are done for your data&lt;&#x2F;li&gt;
+&lt;li&gt;next you can send your application code (JAR or python files passed to SparkContext) to the executors&lt;&#x2F;li&gt;
+&lt;li&gt;finally sparkcontext sends tasks to executors to run&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;prod-files-secure.s3.us-west-2.amazonaws.com&#x2F;2f23d75d-8cd2-4d5a-9e68-9e5a290e391d&#x2F;dd116da8-2082-40f3-a4d6-d098ce928a02&#x2F;Untitled.png&quot; alt=&quot;Untitled&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;prod-files-secure.s3.us-west-2.amazonaws.com&#x2F;2f23d75d-8cd2-4d5a-9e68-9e5a290e391d&#x2F;8bcb38ba-2f2b-4b5f-a630-cc1f2c0b0eaa&#x2F;Untitled.png&quot; alt=&quot;Untitled&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;when you write a spark job, it’s called a spark application&lt;&#x2F;li&gt;
+&lt;li&gt;driver process takes the command from the user, analyze it and send it to executors to do the work.&lt;&#x2F;li&gt;
+&lt;li&gt;when actions are called, RDD’s lineage is used to construct a DAG and they are executed&lt;&#x2F;li&gt;
+&lt;li&gt;Spark scheduler does all this&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;h3 id=&quot;resilient-distributed-dataset-rdd-from-the-original-paper&quot;&gt;Resilient Distributed Dataset(RDD) - from the original paper&lt;&#x2F;h3&gt;
+&lt;p&gt;&lt;strong&gt;Why Spark?&lt;&#x2F;strong&gt;&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;MapReduce was great for batch processing but users needed more
+&lt;ul&gt;
+&lt;li&gt;more complex, multi-pass algorithms&lt;&#x2F;li&gt;
+&lt;li&gt;more interactive ad-hoc queries&lt;&#x2F;li&gt;
+&lt;li&gt;more real-time stream processing&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;the older frameworks provided abstraction over distributing workloads, some level of fault tolerance. Spark does more by providing abstraction for distributed in-memory computation&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;2 main inefficiencies:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;Data re-use is common in many iterative workloads like machine learning &amp;amp; graph algorithms. these applications re-use intermediate results across multiple computations [result between 2 map reduce jobs]&lt;&#x2F;li&gt;
+&lt;li&gt;no support for interactive querying of data. can’t run multiple adhoc queries on the same subset of data&lt;&#x2F;li&gt;
+&lt;li&gt;saving these intermediate states between 2 map-reduce step is an IO overhead and needs to be stored in stable storage.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;figure below shows how the intermediate result is written to a DFS and again read from there&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;prod-files-secure.s3.us-west-2.amazonaws.com&#x2F;2f23d75d-8cd2-4d5a-9e68-9e5a290e391d&#x2F;b3961cc3-4ff3-445a-b850-f1fbca50825a&#x2F;Untitled.png&quot; alt=&quot;Untitled&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;How Spark Solves this?&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;prod-files-secure.s3.us-west-2.amazonaws.com&#x2F;2f23d75d-8cd2-4d5a-9e68-9e5a290e391d&#x2F;ac935e42-fa8b-416c-8451-057d15edef64&#x2F;Untitled.png&quot; alt=&quot;Untitled&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;Example operation:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;python&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-python &quot;&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&amp;quot;&amp;quot;&amp;quot;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;load error messages from the a logfile stored in HDFS or any other file sytem
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;then interactively search for various patterns
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;&amp;quot;&amp;quot;&amp;quot;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# base RDD of strings. a collection of lines from error logfile, now converted
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# as an RDD
+&lt;&#x2F;span&gt;&lt;span&gt;lines = spark.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;textFile&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;hdfs:&#x2F;&#x2F;....&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;)
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# filter out errors from the base RDD of just lines
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# now we get a transformed RDD: errors
+&lt;&#x2F;span&gt;&lt;span&gt;errors = lines.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;filter&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;lambda &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;s&lt;&#x2F;span&gt;&lt;span&gt;: s.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;startswith&lt;&#x2F;span&gt;&lt;span&gt;(&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;ERROR&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot;))
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# just the messages from error, assuming tab seperation
+&lt;&#x2F;span&gt;&lt;span&gt;error_messages = errors.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;filter&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;lambda &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;s&lt;&#x2F;span&gt;&lt;span&gt;: s.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;split&lt;&#x2F;span&gt;&lt;span&gt;(&amp;#39;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#96b5b4;&quot;&gt;\t&lt;&#x2F;span&gt;&lt;span&gt;&amp;#39;)[&lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;2&lt;&#x2F;span&gt;&lt;span&gt;])
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# until this step, all are just transformations. none of these are executed
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# and they are evaluated lzaily
+&lt;&#x2F;span&gt;&lt;span&gt;messages.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;cache&lt;&#x2F;span&gt;&lt;span&gt;() &lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# store the errors efficiently
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# count how many errors are related to MySQL
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# count() is an action - this kick starts the parallel execution
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# tasks are sent out from  Driver to Workers, they do the task, store the result
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# in cache (because we said so) and return result
+&lt;&#x2F;span&gt;&lt;span&gt;messages.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;filter&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;lambda &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;s&lt;&#x2F;span&gt;&lt;span&gt;: &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;MySQL&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot; in s).&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;count&lt;&#x2F;span&gt;&lt;span&gt;()
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# now if we want to filter error messages of Redis, we can just use the
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# cached messages, instead of running all the processes again
+&lt;&#x2F;span&gt;&lt;span&gt;messages.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;filter&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;lambda &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;s&lt;&#x2F;span&gt;&lt;span&gt;: &amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#a3be8c;&quot;&gt;Redis&lt;&#x2F;span&gt;&lt;span&gt;&amp;quot; in s).&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;count&lt;&#x2F;span&gt;&lt;span&gt;()
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;prod-files-secure.s3.us-west-2.amazonaws.com&#x2F;2f23d75d-8cd2-4d5a-9e68-9e5a290e391d&#x2F;63c585d7-7c66-4bca-aa5d-b23ba9469f86&#x2F;Untitled.png&quot; alt=&quot;Untitled&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;rdd-resilient-distributed-dataset&quot;&gt;RDD - Resilient Distributed Dataset&lt;&#x2F;h2&gt;
+&lt;ul&gt;
+&lt;li&gt;RDD - its a distributed memory model that lets programmers perform in-memory computations on large cluster. this is the secret sauce behind efficient reuse of intermediate results&lt;&#x2F;li&gt;
+&lt;li&gt;RDDs are collection of objects that are distributed across different nodes, but you can interact with the data as if its on a single machine.&lt;&#x2F;li&gt;
+&lt;li&gt;they are built using parallel transformation such as map, filter etc. they can be reconstructed automatically when there;s failure&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;h3 id=&quot;fault-tolerance-in-rdds-rdds-track-lineage-info-to-rebuild-lost-data&quot;&gt;Fault Tolerance in RDDs: RDDs track lineage info to rebuild lost data&lt;&#x2F;h3&gt;
+&lt;p&gt;RDD - fault-tolerant parallel data structures that let users explicitly persist intermediate results in memory, controlling their partitioning to optimize data placement and manipulate them with rich set of operators.&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;Has coarse-grained transformations (map, filter etc) that apply the same operation to many data items.&lt;&#x2F;li&gt;
+&lt;li&gt;the transformations are logged and used to build a dataset (its lineage) rather than the actual data.&lt;&#x2F;li&gt;
+&lt;li&gt;so if any of RDD in the middle is lost, we have enough info recreate the same using the logged transformations &amp;amp; applying them to other RDDs&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;prod-files-secure.s3.us-west-2.amazonaws.com&#x2F;2f23d75d-8cd2-4d5a-9e68-9e5a290e391d&#x2F;4b722e47-7533-4bed-81d7-a00a05fcc5e6&#x2F;Untitled.png&quot; alt=&quot;Untitled&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;RDDs are read-only, partitioned collection of records.&lt;&#x2F;li&gt;
+&lt;li&gt;they can be created either on
+&lt;ul&gt;
+&lt;li&gt;data in stable storage, or&lt;&#x2F;li&gt;
+&lt;li&gt;from other RDDs&lt;&#x2F;li&gt;
+&lt;li&gt;though operations called - transformations like map, filter and join&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;users can control RDDs in 2 ways
+&lt;ul&gt;
+&lt;li&gt;persistence - if you want to reuse an RDD in future&lt;&#x2F;li&gt;
+&lt;li&gt;partitioning&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;Action operations include - count, collect, save, etc - they output the dataset to a storage system&lt;&#x2F;li&gt;
+&lt;li&gt;Computations are lazy, only actions trigger the execution&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;h2 id=&quot;spark-runtime&quot;&gt;Spark Runtime&lt;&#x2F;h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Includes a single Driver and multiple Workers&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;prod-files-secure.s3.us-west-2.amazonaws.com&#x2F;2f23d75d-8cd2-4d5a-9e68-9e5a290e391d&#x2F;552bb9db-68a6-450e-9b16-c7b9ed228ec1&#x2F;Untitled.png&quot; alt=&quot;Untitled&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;developers write a driver program, that connects to to a cluster of workers&lt;&#x2F;li&gt;
+&lt;li&gt;driver defines one or more RDDs and invokes actions on them&lt;&#x2F;li&gt;
+&lt;li&gt;lineage is tracked on the driver program side as well.&lt;&#x2F;li&gt;
+&lt;li&gt;workers are the long lived processes that can store RDD partitions in RAM across operations&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;h3 id=&quot;narrow-wide-dependency&quot;&gt;Narrow &amp;amp; Wide Dependency&lt;&#x2F;h3&gt;
+&lt;ul&gt;
+&lt;li&gt;dependency defines whether computation done one one worker node is shared with other nodes in the cluster&lt;&#x2F;li&gt;
+&lt;li&gt;Narrow Dependency: if a type of task submitted completes without interacting with other nodes or does not depend on the results of other nodes, they are called narrow dependencies&lt;&#x2F;li&gt;
+&lt;li&gt;Wide Dependency: after few narrow dependency steps, results are shared with other nodes, in order to further the computation. this is called wide dependency&lt;&#x2F;li&gt;
+&lt;li&gt;In wide dependency, intermediate RDDs are shared with other nodes; while in narrow dependency, its only used in the same machine&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;h4 id=&quot;what-happens-when-a-worker-node-fails-the-spark-job-has-wide-dependency&quot;&gt;What happens when a worker node fails the spark job has wide dependency?&lt;&#x2F;h4&gt;
+&lt;ul&gt;
+&lt;li&gt;the worker in the middle fails before computation is complete. now we need to compute all the narrow dependency steps that comes before wide dependency step across all the nodes&lt;&#x2F;li&gt;
+&lt;li&gt;this takes a lot of time and resources. this is solved persisting periodic checkpoints to file system like HDFS&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;prod-files-secure.s3.us-west-2.amazonaws.com&#x2F;2f23d75d-8cd2-4d5a-9e68-9e5a290e391d&#x2F;65b38a84-01b0-4b95-a951-3c747471c4fe&#x2F;Untitled.png&quot; alt=&quot;Untitled&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;spark-libraries&quot;&gt;Spark Libraries&lt;&#x2F;h3&gt;
+&lt;p&gt;Spark Engine does all this. On top of this there are set of libraries like SparkSQL, SparkML, SparkStreaming, GraphX&lt;&#x2F;p&gt;
+&lt;p&gt;These different processing can be combined&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;prod-files-secure.s3.us-west-2.amazonaws.com&#x2F;2f23d75d-8cd2-4d5a-9e68-9e5a290e391d&#x2F;c58d57ae-b61f-4067-bd42-d6985d97b032&#x2F;Untitled.png&quot; alt=&quot;Untitled&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;prod-files-secure.s3.us-west-2.amazonaws.com&#x2F;2f23d75d-8cd2-4d5a-9e68-9e5a290e391d&#x2F;c6b937eb-fd64-4373-8006-f8cdc6843a06&#x2F;Untitled.png&quot; alt=&quot;Untitled&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;spark-context-vs-spark-session&quot;&gt;Spark Context vs Spark Session&lt;&#x2F;h3&gt;
+&lt;h4 id=&quot;sparkcontext&quot;&gt;SparkContext:&lt;&#x2F;h4&gt;
+&lt;ol&gt;
+&lt;li&gt;Origin: Introduced in early versions of Spark.&lt;&#x2F;li&gt;
+&lt;li&gt;Purpose: It&#x27;s the entry point for Spark functionality, mainly for RDD-based operations.&lt;&#x2F;li&gt;
+&lt;li&gt;Scope: One SparkContext per JVM (Java Virtual Machine).&lt;&#x2F;li&gt;
+&lt;li&gt;Usage: Used primarily with RDD API. considered low level API&lt;&#x2F;li&gt;
+&lt;li&gt;Configuration: Requires explicit configuration of SparkConf.&lt;&#x2F;li&gt;
+&lt;&#x2F;ol&gt;
+&lt;h4 id=&quot;sparksession&quot;&gt;SparkSession:&lt;&#x2F;h4&gt;
+&lt;ol&gt;
+&lt;li&gt;Origin: Introduced in Spark 2.0 as part of the unified API.&lt;&#x2F;li&gt;
+&lt;li&gt;Purpose: Provides a single point of entry to interact with Spark functionality.&lt;&#x2F;li&gt;
+&lt;li&gt;Scope: Multiple SparkSessions can exist in the same JVM.&lt;&#x2F;li&gt;
+&lt;li&gt;Usage: Used with DataFrame and Dataset APIs, as well as SQL. also supports RDD via spark context&lt;&#x2F;li&gt;
+&lt;li&gt;Configuration: Can be created with simpler builder methods.&lt;&#x2F;li&gt;
+&lt;&#x2F;ol&gt;
+&lt;h3 id=&quot;why-use-structured-spark-apis-like-dataframes-datasets-instead-of-rdds&quot;&gt;Why use Structured Spark APIs like DataFrames &amp;amp; DataSets instead of RDDs&lt;&#x2F;h3&gt;
+&lt;ul&gt;
+&lt;li&gt;RDDs are very low level APIs of spark, so chance of writing inefficient code is high. Its like writing code in Assembly language.&lt;&#x2F;li&gt;
+&lt;li&gt;writing RDDs will give you control, but spark can make very little improvement on RDD level API code.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;prod-files-secure.s3.us-west-2.amazonaws.com&#x2F;2f23d75d-8cd2-4d5a-9e68-9e5a290e391d&#x2F;51ae25e8-d9c7-4f92-b6b1-51507bbccfa6&#x2F;Untitled.png&quot; alt=&quot;Untitled&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;Structured API allows you do things in more declarative ways. Optimizations are done by Spark.&lt;&#x2F;li&gt;
+&lt;li&gt;They are high level. Ease of use and readability.&lt;&#x2F;li&gt;
+&lt;li&gt;You write ‘What-to-do’ instead of ‘How-to-do’.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+</content>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>TLDR - Hadoop and HDFS (2006)</title>
+        <published>2024-07-10T00:00:00+00:00</published>
+        <updated>2024-07-10T00:00:00+00:00</updated>
+        <author>
+          <name>Unknown</name>
+        </author>
+        <link rel="alternate" href="/blog/tldr-hdfs-hadoop/" type="text/html"/>
+        <id>/blog/tldr-hdfs-hadoop/</id>
+        
+        <content type="html">&lt;p&gt;&lt;a href=&quot;https:&#x2F;&#x2F;hadoop.apache.org&#x2F;docs&#x2F;stable&#x2F;hadoop-project-dist&#x2F;hadoop-hdfs&#x2F;HdfsDesign.html&quot;&gt;source&lt;&#x2F;a&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;inspired by MapReduce and Google File System&lt;&#x2F;p&gt;
+&lt;p&gt;It consists of 2 main parts&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;HDFS - hadoop distributed file system&lt;&#x2F;li&gt;
+&lt;li&gt;Hadoop MapReduce (impl of MapReduce programming model)&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;h3 id=&quot;assumptions-and-goals&quot;&gt;Assumptions and Goals&lt;&#x2F;h3&gt;
+&lt;ul&gt;
+&lt;li&gt;Hardware failure is norm rather than an exception, so you need to make your file system more resilient to failures&lt;&#x2F;li&gt;
+&lt;li&gt;Streaming Data Access
+&lt;ul&gt;
+&lt;li&gt;application that run on HDFS need streaming access to the data set. These applications are not typically run on traditional file systems.&lt;&#x2F;li&gt;
+&lt;li&gt;HDFS is designed for batch processing rather than interactive use by users&lt;&#x2F;li&gt;
+&lt;li&gt;emphasis is on high throughput rather than latency of data access&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;Application that run on HDFS have large data sets, so it is tuned for large files&lt;&#x2F;li&gt;
+&lt;li&gt;HDFS applications need a write-once-read-many access models.&lt;&#x2F;li&gt;
+&lt;li&gt;Moving computation is cheaper than moving data
+&lt;ul&gt;
+&lt;li&gt;computation is much more efficient when it is done near the data on which it operates&lt;&#x2F;li&gt;
+&lt;li&gt;this is true especially when size of the data set is huge&lt;&#x2F;li&gt;
+&lt;li&gt;HDFS provides interfaces to for applications move closer to where data resides&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;Portability across different hardware and software&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;h3 id=&quot;architecture&quot;&gt;Architecture&lt;&#x2F;h3&gt;
+&lt;ul&gt;
+&lt;li&gt;Follows a Master&#x2F;Slave architecture&lt;&#x2F;li&gt;
+&lt;li&gt;there is a single master called - NameNode
+&lt;ul&gt;
+&lt;li&gt;that manages file system namespace and regulates accessibility to clients&lt;&#x2F;li&gt;
+&lt;li&gt;maps blocks to respective DataNodes in the cluster&lt;&#x2F;li&gt;
+&lt;li&gt;executes file system namespace operations like open, close, renaming files and directories&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;HDFS provides file system namespace and allows user data to be stored in files.&lt;&#x2F;li&gt;
+&lt;li&gt;then there are DataNodes, one per node in the cluster which manages the storage that is attached to that node.&lt;&#x2F;li&gt;
+&lt;li&gt;Internally, file is split into one or more blocks (64MB) and they are stored in DataNodes.&lt;&#x2F;li&gt;
+&lt;li&gt;Read and Write requests from clients are sent to DataNodes&lt;&#x2F;li&gt;
+&lt;li&gt;DataNodes also creates creation, deletion and replication of blocks bases on the instruction from the NameNode&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;prod-files-secure.s3.us-west-2.amazonaws.com&#x2F;2f23d75d-8cd2-4d5a-9e68-9e5a290e391d&#x2F;741156b5-e73e-4ab2-9ad5-95a2ab016f35&#x2F;Untitled.png&quot; alt=&quot;Untitled&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;Data Replication:
+&lt;ul&gt;
+&lt;li&gt;files are stored as sequence of blocks&lt;&#x2F;li&gt;
+&lt;li&gt;blocks are replicated for tolerance. replication factor can be configured per file&lt;&#x2F;li&gt;
+&lt;li&gt;replication factor can be specified at file creation and can be changed later&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;&#x2F;li&gt;
+&lt;li&gt;Heartbeat: NameNode sends heartbeat signal to DataNodes to check if they are functioning properly. If there’s no response from a DataNode it is considered dead.&lt;&#x2F;li&gt;
+&lt;li&gt;Cluster Rebalancing: supports rebalancing schemes. A scheme might move data from one DataNode to another&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;h3 id=&quot;drawbacks&quot;&gt;Drawbacks&lt;&#x2F;h3&gt;
+&lt;ul&gt;
+&lt;li&gt;Stored data on disk or hard disks, which makes it slower. Every time when you need to do some calculations, we need to read the data from the disk, do the operation and store it back to disk&lt;&#x2F;li&gt;
+&lt;li&gt;Only supports Batch Processing. You need to wait for one batch to complete before you submit another batch&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+</content>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>TLDR - Map Reduce (2004)</title>
+        <published>2024-06-24T00:00:00+00:00</published>
+        <updated>2024-06-24T00:00:00+00:00</updated>
+        <author>
+          <name>Unknown</name>
+        </author>
+        <link rel="alternate" href="/blog/tldr-map-reduce/" type="text/html"/>
+        <id>/blog/tldr-map-reduce/</id>
+        
+        <content type="html">&lt;p&gt;&lt;a href=&quot;https:&#x2F;&#x2F;static.googleusercontent.com&#x2F;media&#x2F;research.google.com&#x2F;en&#x2F;&#x2F;archive&#x2F;mapreduce-osdi04.pdf&quot;&gt;paper&lt;&#x2F;a&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;map reduce is a programming model and associated implementation to process large data sets. this was inspired from &lt;em&gt;map-reduce functionality in the functional programming languages&lt;&#x2F;em&gt;.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;programming-model&quot;&gt;Programming Model&lt;&#x2F;h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;map&lt;&#x2F;code&gt; functions take a key-value pair and to generate a set of intermediate key-value pair. This is a user written function that accepts a kv pair and generates a kv-pair&lt;&#x2F;li&gt;
+&lt;li&gt;The MapReduce library takes the intermediate result, groups them by the same intermediate key and passes it to &lt;code&gt;reduce&lt;&#x2F;code&gt; function&lt;&#x2F;li&gt;
+&lt;li&gt;&lt;code&gt;reduce&lt;&#x2F;code&gt; function takes a intermediate key-value pairs and merges all intermediate values associated with the same intermediate key&lt;&#x2F;li&gt;
+&lt;li&gt;this function is also written by user, which accepts the intermediate key &lt;code&gt;k&lt;&#x2F;code&gt; and a set of values for that key. it merges them into a smaller set of values.&lt;&#x2F;li&gt;
+&lt;li&gt;Typically input kv pair comes from a map-reduce step and the output is also consumed by another map-reduce step&lt;&#x2F;li&gt;
+&lt;li&gt;for ex: you have set of docs [doc_name, doc_contents]. pass it to &lt;code&gt;map&lt;&#x2F;code&gt; function, map splits the content and counts the words in the document, generating (word: 1) key value pair. this intermediate kv pair is sent to reduce &lt;code&gt;reduce&lt;&#x2F;code&gt; function, which adds the frequency of each word by combining results of word. The result of the reduce function is also a key-value pair, that could be sent to another set of map-reduce functions&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;pre data-lang=&quot;python&quot; style=&quot;background-color:#2b303b;color:#c0c5ce;&quot; class=&quot;language-python &quot;&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;def &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;map&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;key&lt;&#x2F;span&gt;&lt;span&gt;:str, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;value&lt;&#x2F;span&gt;&lt;span&gt;:str):
+&lt;&#x2F;span&gt;&lt;span&gt;	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# key: document name
+&lt;&#x2F;span&gt;&lt;span&gt;	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# value: document content
+&lt;&#x2F;span&gt;&lt;span&gt;	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;for &lt;&#x2F;span&gt;&lt;span&gt;word &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;in &lt;&#x2F;span&gt;&lt;span&gt;value:
+&lt;&#x2F;span&gt;&lt;span&gt;		&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;emit_intermediate&lt;&#x2F;span&gt;&lt;span&gt;(word, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;1&lt;&#x2F;span&gt;&lt;span&gt;)
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;def &lt;&#x2F;span&gt;&lt;span style=&quot;color:#8fa1b3;&quot;&gt;reduce&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;key&lt;&#x2F;span&gt;&lt;span&gt;:str, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;values&lt;&#x2F;span&gt;&lt;span&gt;:[Iterator]):
+&lt;&#x2F;span&gt;&lt;span&gt;	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# key: a word from map
+&lt;&#x2F;span&gt;&lt;span&gt;	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# values: list of aggregated values from intermediate step
+&lt;&#x2F;span&gt;&lt;span&gt;	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#65737e;&quot;&gt;# count of word
+&lt;&#x2F;span&gt;&lt;span&gt;	freq = {}
+&lt;&#x2F;span&gt;&lt;span&gt;	&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;for &lt;&#x2F;span&gt;&lt;span&gt;k, vals &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;in &lt;&#x2F;span&gt;&lt;span&gt;values.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;items&lt;&#x2F;span&gt;&lt;span&gt;():
+&lt;&#x2F;span&gt;&lt;span&gt;		&lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;for &lt;&#x2F;span&gt;&lt;span&gt;v &lt;&#x2F;span&gt;&lt;span style=&quot;color:#b48ead;&quot;&gt;in &lt;&#x2F;span&gt;&lt;span&gt;vals:
+&lt;&#x2F;span&gt;&lt;span&gt;			freq[k] = freq.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;get&lt;&#x2F;span&gt;&lt;span&gt;(k, &lt;&#x2F;span&gt;&lt;span style=&quot;color:#d08770;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span&gt;) + &lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;int&lt;&#x2F;span&gt;&lt;span&gt;(v)
+&lt;&#x2F;span&gt;&lt;span&gt;		&lt;&#x2F;span&gt;&lt;span style=&quot;color:#bf616a;&quot;&gt;emit&lt;&#x2F;span&gt;&lt;span&gt;(freq[k])
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;&lt;img src=&quot;https:&#x2F;&#x2F;prod-files-secure.s3.us-west-2.amazonaws.com&#x2F;2f23d75d-8cd2-4d5a-9e68-9e5a290e391d&#x2F;07f1b496-cf31-411d-9974-7c1811822995&#x2F;Untitled.png&quot; alt=&quot;Untitled&quot; &#x2F;&gt;&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;how-it-works&quot;&gt;How it works&lt;&#x2F;h3&gt;
+&lt;ul&gt;
+&lt;li&gt;map-reduce library splits the file into 16-64 MB chunks&lt;&#x2F;li&gt;
+&lt;li&gt;If there are &lt;strong&gt;M&lt;&#x2F;strong&gt; map tasks, &lt;strong&gt;R&lt;&#x2F;strong&gt; reducer tasks, controlled by the master&lt;&#x2F;li&gt;
+&lt;li&gt;master picks up a input split, assigns it to a free worker. Worker reads the file, parses it and passes it onto user defined map function. this map functions generates intermediate key-value pair are buffered in-memory&lt;&#x2F;li&gt;
+&lt;li&gt;Periodicallly, buffered pairs are written to local disk, partitioned into R regions. location of these are sent to master, who’s responsible for forwarding them to reduce workers&lt;&#x2F;li&gt;
+&lt;li&gt;when reducer is notified, it uses a RPC to read from the local disk of the map worker. it groups the data using based on the intermediate keys&lt;&#x2F;li&gt;
+&lt;li&gt;reduce worker iterates over the key, for each unique key, it passes the corresponding values to user’s reduce function. the output of the reduce function is appended to the output file&lt;&#x2F;li&gt;
+&lt;li&gt;When all map and reducer tasks are done, master wakes up the user program. at this point, the MapReduce function call in the user program returns the value. outputs are available in R different output files. these are generally passed onto another map reduce functions to further generate result&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;h3 id=&quot;fault-tolerance&quot;&gt;Fault Tolerance:&lt;&#x2F;h3&gt;
+&lt;h4 id=&quot;worker-failures&quot;&gt;Worker Failures&lt;&#x2F;h4&gt;
+&lt;ul&gt;
+&lt;li&gt;Master maintains the state of each worker (idle, in-progress, completed).&lt;&#x2F;li&gt;
+&lt;li&gt;It periodically pings the worker to check if it is fine. If it receives no response, the map task assigned to it is reset and re-assigned to other available workers&lt;&#x2F;li&gt;
+&lt;li&gt;Failed workers are reset to idle state and work is assigned&lt;&#x2F;li&gt;
+&lt;li&gt;same process with reduce workers as well.&lt;&#x2F;li&gt;
+&lt;li&gt;If a map task at worker-A fails, and it is later executed by worker-B, all reduce workers will be notified of the re-execution. Any worker that has not read from worker-A, will now read from worker-B&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;h4 id=&quot;master-failure&quot;&gt;Master Failure&lt;&#x2F;h4&gt;
+&lt;ul&gt;
+&lt;li&gt;Master data structure is check-pointed periodically to store master’s state&lt;&#x2F;li&gt;
+&lt;li&gt;If the master fails, it uses the most recent checkpoint for recovery&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;Map-Reduce is just a programming model, supported by a master-worker style architecture. There are multiple use cases and enhancements done over this.&lt;&#x2F;p&gt;
+&lt;p&gt;Advantages:&lt;&#x2F;p&gt;
+&lt;ul&gt;
+&lt;li&gt;Easy to use for anyone without parallel &amp;amp; distributed systems&lt;&#x2F;li&gt;
+&lt;li&gt;large-scale data processing made easy with parallellization&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+</content>
+        
+    </entry>
+    <entry xml:lang="en">
+        <title>TLDR - Google File System (2003)</title>
+        <published>2024-06-20T00:00:00+00:00</published>
+        <updated>2024-06-20T00:00:00+00:00</updated>
+        <author>
+          <name>Unknown</name>
+        </author>
+        <link rel="alternate" href="/blog/tldr-gfs/" type="text/html"/>
+        <id>/blog/tldr-gfs/</id>
+        
+        <content type="html">&lt;p&gt;&lt;a href=&quot;https:&#x2F;&#x2F;static.googleusercontent.com&#x2F;media&#x2F;research.google.com&#x2F;en&#x2F;&#x2F;archive&#x2F;gfs-sosp2003.pdf&quot;&gt;original paper&lt;&#x2F;a&gt;&lt;&#x2F;p&gt;
+&lt;p&gt;Scalable distributed file system for large distributed data-intensive applications.It is fault tolerant, runs on commodity hardware, provides high aggregate performance.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;why&quot;&gt;Why?&lt;&#x2F;h3&gt;
+&lt;ul&gt;
+&lt;li&gt;component failures are norms rather than the exception. they fail often, therefore constant monitoring, error detection, fault tolerance and automatic recovery is integral to the file system&lt;&#x2F;li&gt;
+&lt;li&gt;Files are huge by traditional standards and working with large number of them is a pain when it comes to I&#x2F;O on these files. So it is important to consider I&#x2F;O and block sizes when designing&lt;&#x2F;li&gt;
+&lt;li&gt;Files are mutated by appending rather than overwriting the existing data. Reads are usually sequential. Given this access pattern, appending becomes the focus of performance optimization, atomicity and caching.&lt;&#x2F;li&gt;
+&lt;li&gt;Co-designing apps and file system API benifits overall, considering the interaction between the files and applications&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;h3 id=&quot;architecture&quot;&gt;Architecture&lt;&#x2F;h3&gt;
+&lt;ul&gt;
+&lt;li&gt;Single Master and multiple Chunk Servers, that can be accessed by clinets&lt;&#x2F;li&gt;
+&lt;li&gt;Files are split into fixed size chunks (64 MB), each chunk is identified by 64-bit globally unique chunk_handle assigned by the Master&lt;&#x2F;li&gt;
+&lt;li&gt;Chunks are written in the local disk of the chunk servers.&lt;&#x2F;li&gt;
+&lt;li&gt;Master only stores the metadata of the chunk servers and chunks&lt;&#x2F;li&gt;
+&lt;li&gt;Each chunk is replicated(3-replicas by default) on multiple chunk-servers for reliability.&lt;&#x2F;li&gt;
+&lt;&#x2F;ul&gt;
+&lt;p&gt;... unfinished&lt;&#x2F;p&gt;
+</content>
+        
+    </entry>
+</feed>
