@@ -9,7 +9,7 @@ Software Engineer working on databases (stuck at the crossroads).
     <div><sup><sup><sup>credits to <a href="https://x.com/PThorpe92">Preston Thorpe</a></sup></sup></sup></div>
 </div>
 
-I like \[Distributed\] Database Systems, Programming Languages, OSS and a bit of Machine Learning. Outside of work: coffee, F1, beekeeping or <a id="rh" href="#">some rabit hole</a>.
+I like \[Distributed\] Database Systems, Programming Languages, OSS and a bit of Machine Learning. Outside of work: coffee, F1, beekeeping or <a id="rh" href="#">some rabbit hole</a>.
 
 Sometimes I write here, checkout [blog](/blog).
 

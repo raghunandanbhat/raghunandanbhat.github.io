@@ -6,6 +6,8 @@ extra.hide_table_of_contents = true
 ### Long list of blogs/article/videos/bookmarks/whatever I find interesting-
 [I haven't read all of this]
 * Mar 2026
+  * [Are mutexes slow?](https://www.youtube.com/watch?v=tND-wBBZ8RY)
+  * [The broken economics of databases](https://www.bitsxpages.com/p/the-broken-economics-of-databases)
   * [fitting a query engine in three cache lines](https://vertexclique.com/blog/fitting-a-query-engine-in-three-cache-lines/)
   * [why do CPUs have multiple cache levels](https://fgiesen.wordpress.com/2016/08/07/why-do-cpus-have-multiple-cache-levels/)
 ---

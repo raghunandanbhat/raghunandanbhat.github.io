@@ -39,8 +39,11 @@ const obss = [
     name: "The Ultimate Goal",
     url: "https://www.youtube.com/watch?v=N5nXUht7BhQ",
   },
+  {
+    name: "Ergo Keyboards",
+    url: "http://xahlee.info/kbd/ergonomic_keyboards_index.html",
+  },
   /*{ name: "", url: "" },
-  { name: "", url: "" },
   { name: "", url: "" },
   { name: "", url: "" },*/
 ];
