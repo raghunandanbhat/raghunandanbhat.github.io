@@ -5,6 +5,9 @@ extra.hide_table_of_contents = true
 +++
 ### Long list of blogs/article/videos/bookmarks/whatever I find interesting-
 [I haven't read all of this]
+* Apr 2026
+  * [cs153- frontier systems](https://cs153.stanford.edu/)
+---
 * Mar 2026
   * [Are mutexes slow?](https://www.youtube.com/watch?v=tND-wBBZ8RY)
   * [The broken economics of databases](https://www.bitsxpages.com/p/the-broken-economics-of-databases)
