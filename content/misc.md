@@ -6,6 +6,11 @@ extra.hide_table_of_contents = true
 ### Long list of blogs/article/videos/bookmarks/whatever I find interesting-
 [I haven't read all of this]
 * Apr 2026
+  * [Prefil-as-a-service](https://arxiv.org/html/2604.15039v1)
+  * [CPU bottleneck in agentic AI](https://www.viksnewsletter.com/p/the-cpu-bottleneck-in-agentic-ai)
+  * [ML compilers aren't all the same](https://medium.com/@martin00001313/ml-compilers-arent-all-the-same-here-s-why-63d48ce438b0)
+  * [Accelerated Computing](https://accelerated-computing.academy/fall25/)
+  * [GPU and TPU stuff by Adam Mainz](https://x.com/MainzOnX/articles)
   * [cs153- frontier systems](https://cs153.stanford.edu/)
 ---
 * Mar 2026
